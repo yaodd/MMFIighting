@@ -59,10 +59,10 @@ void EnemySprite::myInit(){
     hitAnimate1 = getAnimate(4, hit1ImageName, 0.1);
     hitAnimate1->retain();
     
-    this->setHitbox(this->createBoundingBoxWithOrigin(ccp(-CENTER_TO_SIDE, -CENTER_TO_BOTTOM),
-                                                      CCSizeMake(CENTER_TO_SIDE * 2, CENTER_TO_BOTTOM * 2)));
+    this->setHitbox(this->createBoundingBoxWithOrigin(ccp(-CENTER_TO_SIDE, -CENTER_TO_BOTTOM),CCSizeMake(CENTER_TO_SIDE * 2, CENTER_TO_BOTTOM * 2)));
     this->setAttackBox(this->createBoundingBoxWithOrigin(ccp(CENTER_TO_SIDE, -10), CCSizeMake(20, 20)));
 
+    _nextDecisionTime = 0;
     
 }
 
@@ -123,22 +123,28 @@ void EnemySprite::setAnimateAction(ActionState actionState)
         this->runAction(runAnimate);
     }
     else{
+//        CCLOG("1");
         CCObject *finished = CCCallFunc::create(this, callfunc_selector(EnemySprite::runFinishedCallBack));
+//        CCLOG("2");
         CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
+//        runArray->retain();
+//        CCLOG("3");
         this->runAction(CCSequence::create(runArray));
-
+//        CCLOG("4");
     }
     
 }
 
 void EnemySprite::runFinishedCallBack()
 {
+//    CCLOG("begin");
     this->actionState = kActionStateNone;
 //    CCSprite *temp_sprite = CCSprite::createWithSpriteFrameName(initImageNames[0]);
 //    CCTexture2D *initT2D = temp_sprite->getTexture();
 //    this->setTexture(initT2D);
+    this->stopAllActions();
     this->setAnimateAction(this->actionState);
-    CCLog("call back");
+//    CCLog("call back");
     
 }
 
@@ -164,4 +170,34 @@ void EnemySprite::setPosition(CCPoint position)
 {
     CCSprite::setPosition(position);
     this->transformBoxes();
+}
+void EnemySprite::walkWithDirection(CCPoint direction){
+    if (actionState == kActionStateNone) {
+        this->stopAllActions();
+        this->setAnimateAction(kActionStateWalk);
+    }
+    if (actionState == kActionStateWalk) {
+        _velocity = ccp(direction.x * 3, direction.y * 3);
+        if (_velocity.x >= 0) {
+            this->setScaleX(-1.0);
+        } else{
+            this->setScaleX(1.0);
+        }
+        /*
+        this->setAnimateAction(actionState);
+        CCPoint point = this->getPosition();
+        
+        float resultX = point.x + direction.x * 20;
+        float resultY = point.y + direction.y * 20;
+        //        CCLOG("x %f y %f",point.x,point.y);
+        if (resultX - CENTER_TO_SIDE >= 0 && resultX+ CENTER_TO_SIDE <= 2048) {
+            point.x = resultX;
+            CCLOG("in1");
+        }
+        if (resultY - CENTER_TO_BOTTOM >= 0 && resultY + CENTER_TO_BOTTOM <= 1534) {
+            point.y = resultY;
+        }
+        this->setPosition(point);
+         */
+    }
 }

@@ -44,6 +44,7 @@ GameLayer::~GameLayer(){
     this->unscheduleUpdate();
 }
 
+
 bool GameLayer::init(){
     bool pRet = false;
     do {
@@ -53,7 +54,7 @@ bool GameLayer::init(){
         CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(actionPlistName);
         _actors = CCSpriteBatchNode::create(actionTPName);
         _actors->getTexture()->setAliasTexParameters();
-        this->addChild(_actors,5);
+        this->addChild(_actors, 5);
         
         CCSprite *background = CCSprite::create(bgImageName);
         background->setPosition(ccp(winSize.width / 2, winSize.height / 2));
@@ -71,6 +72,7 @@ bool GameLayer::init(){
         playerSprite->setPosition(ccp(winSize.width / 2, winSize.height / 2));
         playerSprite->setTag(PLAYER_TAG);
         _actors->addChild(playerSprite);
+
         
         CCSprite *handSpriteNor = CCSprite::create(handImageNameNor);
         CCSprite *handSpritePre = CCSprite::create(handImageNamePre);
@@ -96,7 +98,6 @@ bool GameLayer::init(){
         
         this->scheduleUpdate();
         pRet = true;
-        
     } while (0);
     
     return pRet;
@@ -109,6 +110,9 @@ void GameLayer::update(float dt){
         CCSprite *sprite = (CCSprite *)pObject;
         _actors->reorderChild(sprite, (int)(768 * 2 - sprite->getPosition().y));
     }
+    this->updateEnemys(dt);
+    this->updatePositions(dt);
+    
 }
 
 void GameLayer::initEnemys(){
@@ -125,6 +129,7 @@ void GameLayer::initEnemys(){
 //        enemyNode->addChild(enemy);
         enemy->setTag(ENEMY_TAG);
         _actors->addChild(enemy);
+        
         _enemys->addObject(enemy);
         
         
@@ -156,7 +161,6 @@ void GameLayer::onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint directio
         playerSprite->setPosition(point);
 //        playerSprite->setZOrder((int)(768 * 2 - point.y));
         
-        
         if (direction.x < 0) {
 //            playerSprite->setRotationY(0.0f);
             playerSprite->setScaleX(1.0f);
@@ -187,7 +191,10 @@ void GameLayer::onCCJoyStickDeactivated(CCNode *sender){
 }
 //出拳
 void GameLayer::handAction(CCObject *pScene){
-    CCLOG("hand");
+//    CCLOG("before");
+    if (playerSprite->actionType == kActionTypeBeingHit_1 || playerSprite->actionType == kActionTypeBeingHit_2) {
+        return;
+    }
     if (playerSprite->actionType != kActionTypeHit_4) {
         playerSprite->stopAllActions();//出招前停止所有动作，除非是第四招
     }
@@ -212,38 +219,43 @@ void GameLayer::handAction(CCObject *pScene){
         EnemySprite *testSprite = NULL;
         CCARRAY_FOREACH(_enemys, pObject){
             testSprite = (EnemySprite *)pObject;
-            CCLog("%f %f",testSprite->getPosition().x,testSprite->getPosition().y);
+//            CCLog("%f %f",testSprite->getPosition().x,testSprite->getPosition().y);
         
-        if (testSprite->actionState != kActionStateDie)
-        {
-            if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
+            if (testSprite->actionState != kActionStateDie)
             {
-                if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
+                if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
                 {
-                    ActionState actionState;
-                    if (playerSprite->actionType == kActionTypeHit_1 || playerSprite->actionType == kActionTypeHit_3) {
-                        actionState = kActionStateBeingHit_1;
+                    if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
+                    {
+                        ActionState actionState;
+                        if (playerSprite->actionType == kActionTypeHit_1 || playerSprite->actionType == kActionTypeHit_3) {
+                            actionState = kActionStateBeingHit_1;
+                        }
+                        if (playerSprite->actionType == kActionTypeHit_2) {
+                            actionState = kActionStateBeingHit_2;
+                        }
+                        if (playerSprite->actionType == kActionTypeHit_4) {
+                            actionState = kActionStateDie;
+                        }
+//                        CCLog("action---------------------------");
+                        testSprite->setAnimateAction(actionState);
                     }
-                    if (playerSprite->actionType == kActionTypeHit_2) {
-                        actionState = kActionStateBeingHit_2;
-                    }
-                    if (playerSprite->actionType == kActionTypeHit_4) {
-                        actionState = kActionStateDie;
-                    }
-                    CCLog("action---------------------------");
-                    testSprite->setAnimateAction(actionState);
                 }
             }
         }
-        }
-        
+
     }
+//    CCLog("after");
+    
     
 }
 
 void GameLayer::footAction(CCObject *pScene){
     CCLOG("foot");
     /*
+=======
+    
+>>>>>>> 313251d669c7cab58d31df4ab300172ff454b95d
     testSprite->setAnimateAction(kActionStateHit1);
     if (testSprite->actionState == kActionStateHit1) {
         if (playerSprite->actionType != kActionTypeDie) {
@@ -254,8 +266,108 @@ void GameLayer::footAction(CCObject *pScene){
             }
         }
     }
+<<<<<<< HEAD
      */
 }
+//敌人AI
+void GameLayer::updateEnemys(float dt){
+//    CCLog("before");
+    int alive = 0;
+    float distanceSQ;
+    int randomChoice = 0;
+    CCObject *pObject = NULL;
+    EnemySprite *enemy = NULL;
+    CCARRAY_FOREACH(_enemys, pObject){
+        enemy = (EnemySprite *)pObject;
+        if (enemy->actionState != kActionStateDie) {
+            //1
+            alive++;
+            //2
+            if (CURTIME > enemy->getNextDecisionTime()) {
+                distanceSQ = ccpDistanceSQ(enemy->getPosition(), playerSprite->getPosition());
+                //3
+                if (distanceSQ >=10 * 10 && distanceSQ <= 50 * 50) {
+                    enemy->setNextDecisionTime(CURTIME + frandom_range(0.1, 0.5) * 1000);
+                    randomChoice = random_range(0, 1);
+                    if (0 == randomChoice) {
+                        if (playerSprite->getPosition().x > enemy->getPosition().x) {
+                            enemy->setScaleX(-1.0);
+                        }else{
+                            enemy->setScaleX(1.0);
+                        }
+                        //4
+                        enemy->setNextDecisionTime(enemy->getNextDecisionTime() + frandom_range(0.1,0.5) * 2000);
+//                        CCLog("before");
+                        if (enemy->actionState != kActionStateDie && enemy->actionState != kActionStateBeingHit_1 && enemy->actionState != kActionStateBeingHit_2) {
+                            
+                        }
+                        
+//                        CCLog("after");
+                        if (enemy->actionState != kActionStateDie && enemy->actionState != kActionStateBeingHit_1 && enemy->actionState != kActionStateBeingHit_2 && enemy->actionState != kActionStateWalk) {
+                            enemy->setAnimateAction(kActionStateHit1);
+                            if (fabsf(playerSprite->getPosition().y - enemy->getPosition().y) < 30) {
+                                if (enemy->getAttackBox().actual.intersectsRect(playerSprite->getHitbox().actual)) {
+                                    CCLOG("being_hit ,%f %f %f %f",enemy->getAttackBox().actual.origin.x,enemy->getAttackBox().actual.origin.y,playerSprite->getHitbox().actual.origin.x,playerSprite->getHitbox().actual.origin.y);
+
+                                    ActionType actionType;
+                                    if (playerSprite->actionType == kActionTypeNone || playerSprite->actionType == kActionTypeWalk || playerSprite->actionType == kActionTypeBeingHit_2) {
+                                        actionType = kActionTypeBeingHit_1;
+//                                        playerSprite->setAnimateAction(kActionTypeBeingHit_1);
+                                    }
+                                    else if (playerSprite->actionType == kActionTypeBeingHit_1) {
+//                                        playerSprite->setAnimateAction(kActionTypeBeingHit_2);
+//                                        CCLOG("beingHit_2");
+                                        actionType = kActionTypeBeingHit_2;
+                                    }
+                                    playerSprite->retain();
+                                    playerSprite->setAnimateAction(actionType);
+                                    
+                                    CCLOG("finished");
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        enemy->setAnimateAction(kActionStateNone);
+                    }
+                } else if (distanceSQ <= winSize.width * winSize.width){
+                    //5
+                    enemy->setNextDecisionTime(CURTIME + frandom_range(0.5, 1.0) * 1000);
+                    randomChoice = random_range(0, 2);
+                    if (randomChoice == 0) {
+                        CCPoint moveDirection = ccpNormalize(ccpSub(playerSprite->getPosition(), enemy->getPosition()));
+//                        enemy->setPosition(moveDirection);
+                        enemy->walkWithDirection(moveDirection);
+//                        CCLOG("move %f %f",moveDirection.x,moveDirection.y);
+//                        this->updatePositions(dt);
+                    }
+                    else {
+                        enemy->setAnimateAction(kActionStateNone);
+                    }
+                }
+            }
+            
+        }
+    }
+//    CCLog("after");
+}
+
+void GameLayer::updatePositions(float dt){
+    CCObject *pObject = NULL;
+    EnemySprite *enemy = NULL;
+    CCARRAY_FOREACH(_enemys, pObject){
+        enemy = (EnemySprite *)pObject;
+        CCPoint point = enemy->getPosition();
+        
+        float resultX = point.x + enemy->getVelocity().x;
+        float resultY = point.y + enemy->getVelocity().y;
+        if (enemy->actionState == kActionStateWalk) {
+            enemy->setPosition(ccp(resultX, resultY));
+        }
+        
+    }
+}
+
 
 
 

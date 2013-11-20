@@ -32,6 +32,11 @@ public:
     void onCCJoyStickDeactivated(CCNode* sender);
     
     void update(float dt);
+    
+    void updateEnemys(float dt);
+    
+    void updatePositions(float dt);
+    
     CCJoystick *joyStick;
     CCSize winSize;
     PlayerSprite *playerSprite;

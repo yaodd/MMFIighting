@@ -74,7 +74,7 @@ void PlayerSprite::myInit()
     this->setHitbox(this->createBoundingBoxWithOrigin(ccp(-CENTER_TO_SIDE, -CENTER_TO_BOTTOM),
                                                       CCSizeMake(CENTER_TO_SIDE * 2, CENTER_TO_BOTTOM * 2)));
     this->setAttackBox(this->createBoundingBoxWithOrigin(ccp(CENTER_TO_SIDE, -10), CCSizeMake(20, 20)));
-    
+    beingHitCount = 0;
 }
 
 CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt)
@@ -86,6 +86,7 @@ CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt
         const char *imageName = string->getCString();
 //        pAction[i] = CCSpriteFrame::create(imageName, CCRect(0, 0, 280, 196));
         pAction[i] = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(imageName);
+
     }
     CCArray *pArr=CCArray::createWithCapacity(num);
     for (int i = 0; i < num; i ++) {
@@ -105,6 +106,7 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
 {
     this->actionType = actionType;
     CCAnimate *runAnimate;
+    this->stopAllActions();
     switch (this->actionType) {
         case kActionTypeNone:
             runAnimate = idleAnimate;
@@ -145,21 +147,26 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
         this->runAction(runAnimate);
     }
     else{
+        CCLog("bbbbbbb");
         CCObject *finished = CCCallFunc::create(this, callfunc_selector(PlayerSprite::runFinishedCallBack));
+//        finished->retain();
+        runAnimate->retain();
         CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
         this->runAction(CCSequence::create(runArray));
+        CCLog("sssssss");
     }
-    
     
 }
 
 void PlayerSprite::runFinishedCallBack()
 {
+    CCLog("begin");
     this->actionType = kActionTypeNone;
 //    CCSprite *temp_sprite = CCSprite::createWithSpriteFrameName(initImageName);
 //    CCTexture2D *initT2D = temp_sprite->getTexture();
 //    this->setTexture(initT2D);
 //    this->runAction(idleAnimate);
+    this->stopAllActions();
     this->setAnimateAction(this->actionType);
     CCLog("call back");
     

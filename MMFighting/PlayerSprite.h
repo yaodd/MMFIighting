@@ -57,6 +57,8 @@ public:
     void setPosition(CCPoint position);
     void setAnimateAction(ActionType actionType);
     
+    int beingHitCount;
+    
 };
 
 #endif /* defined(__MMFighting__PlayerSprite__) */

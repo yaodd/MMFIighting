@@ -50,6 +50,8 @@ public:
     
     CC_SYNTHESIZE(BoundingBox, _hitBox, Hitbox);
     CC_SYNTHESIZE(BoundingBox, _attackBox, AttackBox);
+    CC_SYNTHESIZE(float, _nextDecisionTime, NextDecisionTime);
+    CC_SYNTHESIZE(CCPoint, _velocity, Velocity);
     
     BoundingBox createBoundingBoxWithOrigin(CCPoint origin, CCSize size);
     void transformBoxes();
@@ -57,6 +59,7 @@ public:
 
     
     void setAnimateAction(ActionState actionState);
+    void walkWithDirection(CCPoint direction);
     
     
     
