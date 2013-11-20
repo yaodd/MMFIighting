@@ -86,6 +86,7 @@ CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt
         const char *imageName = string->getCString();
 //        pAction[i] = CCSpriteFrame::create(imageName, CCRect(0, 0, 280, 196));
         pAction[i] = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(imageName);
+
     }
     CCArray *pArr=CCArray::createWithCapacity(num);
     for (int i = 0; i < num; i ++) {
@@ -149,7 +150,6 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
         CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
         this->runAction(CCSequence::create(runArray));
     }
-    
     
 }
 

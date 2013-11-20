@@ -44,6 +44,7 @@ GameLayer::~GameLayer(){
     this->unscheduleUpdate();
 }
 
+
 bool GameLayer::init(){
     bool pRet = false;
     do {
@@ -71,6 +72,7 @@ bool GameLayer::init(){
         playerSprite->setPosition(ccp(winSize.width / 2, winSize.height / 2));
         playerSprite->setTag(PLAYER_TAG);
         _actors->addChild(playerSprite);
+
         
         CCSprite *handSpriteNor = CCSprite::create(handImageNameNor);
         CCSprite *handSpritePre = CCSprite::create(handImageNamePre);
@@ -96,7 +98,6 @@ bool GameLayer::init(){
         
         this->scheduleUpdate();
         pRet = true;
-        
     } while (0);
     
     return pRet;
@@ -155,7 +156,6 @@ void GameLayer::onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint directio
         }
         playerSprite->setPosition(point);
 //        playerSprite->setZOrder((int)(768 * 2 - point.y));
-        
         
         if (direction.x < 0) {
 //            playerSprite->setRotationY(0.0f);
@@ -236,7 +236,7 @@ void GameLayer::handAction(CCObject *pScene){
             }
         }
         }
-        
+
     }
     
 }
@@ -244,6 +244,9 @@ void GameLayer::handAction(CCObject *pScene){
 void GameLayer::footAction(CCObject *pScene){
     CCLOG("foot");
     /*
+=======
+    
+>>>>>>> 313251d669c7cab58d31df4ab300172ff454b95d
     testSprite->setAnimateAction(kActionStateHit1);
     if (testSprite->actionState == kActionStateHit1) {
         if (playerSprite->actionType != kActionTypeDie) {
@@ -254,6 +257,7 @@ void GameLayer::footAction(CCObject *pScene){
             }
         }
     }
+<<<<<<< HEAD
      */
 }
 
