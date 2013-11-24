@@ -8,12 +8,12 @@
 
 #include "MenuItemLayer.h"
 #include "GameScene.h"
-const char playImageNorName[20] = "play1.png";
-const char playImagePreName[20] = "play2.png";
-const char helpImageNorName[20] = "help1.png";
-const char helpImagePreName[20] = "help2.png";
-const char exitImageNorName[20] = "exit1.png";
-const char exitImagePreName[20] = "exit2.png";
+const char continueImageName1[20] = "Continue1.png";
+const char continueImageName2[20] = "Continue2.png";
+const char helpImageName1[20] = "HELP1.png";
+const char helpImageName2[20] = "HELP2.png";
+const char playImageName1[20] = "PLAY1.png";
+const char playImageName2[20] = "PLAY2.png";
 
 MenuItemLayer::MenuItemLayer()
 {
@@ -30,27 +30,27 @@ bool MenuItemLayer::init(){
     do {
         
         winSize = CCDirector::sharedDirector()->getWinSize();
-        CCSprite *playNor = CCSprite::create(playImageNorName);
-        CCSprite *playPre = CCSprite::create(playImagePreName);
+        CCSprite *playNor = CCSprite::createWithSpriteFrameName(playImageName1);
+        CCSprite *playPre = CCSprite::createWithSpriteFrameName(playImageName2);
         CCMenuItemSprite *playItem = CCMenuItemSprite::create(playNor, playPre, this, menu_selector(MenuItemLayer::playAction));
         
-        CCSprite *helpNor = CCSprite::create(helpImageNorName);
-        CCSprite *helpPre = CCSprite::create(helpImagePreName);
+        CCSprite *helpNor = CCSprite::createWithSpriteFrameName(helpImageName1);
+        CCSprite *helpPre = CCSprite::createWithSpriteFrameName(helpImageName2);
         CCMenuItemSprite *helpItem = CCMenuItemSprite::create(helpNor, helpPre, this, menu_selector(MenuItemLayer::helpAction));
         
-        CCSprite *exitNor = CCSprite::create(exitImageNorName);
-        CCSprite *exitPre = CCSprite::create(exitImagePreName);
-        CCMenuItemSprite *exitItem = CCMenuItemSprite::create(exitNor, exitPre, this, menu_selector(MenuItemLayer::exitAction));
+        CCSprite *continueNor = CCSprite::createWithSpriteFrameName(continueImageName1);
+        CCSprite *continuePre = CCSprite::createWithSpriteFrameName(continueImageName2);
+        CCMenuItemSprite *continueItem = CCMenuItemSprite::create(continueNor, continuePre, this, menu_selector(MenuItemLayer::continueAction));
         
         
-        CCMenu *mainMenu = CCMenu::create(playItem,helpItem,exitItem,NULL);
-        mainMenu->alignItemsVerticallyWithPadding(20);
-        mainMenu->setPosition(winSize.width / 2, winSize.height / 2 - 160);
+        CCMenu *mainMenu = CCMenu::create(continueItem,playItem,helpItem,NULL);
+        mainMenu->alignItemsVerticallyWithPadding(30);
+        mainMenu->setPosition(winSize.width / 4 * 3, winSize.height / 3 - 100);
         this->addChild(mainMenu);
         pRet = true;
     } while (0);
     
-    return true;
+    return pRet;
 }
 
 void MenuItemLayer::playAction(CCObject *pScene)
@@ -64,7 +64,7 @@ void MenuItemLayer::helpAction(CCObject *pScene)
 {
     
 }
-void MenuItemLayer::exitAction(CCObject *pScene)
+void MenuItemLayer::continueAction(CCObject *pScene)
 {
     
 }

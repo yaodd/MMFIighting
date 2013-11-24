@@ -11,6 +11,11 @@
 		9C0F8AC718239BED00FEFABA /* hit1_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0F8AC418239BED00FEFABA /* hit1_1.png */; };
 		9C0F8AC818239BED00FEFABA /* hit1_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0F8AC518239BED00FEFABA /* hit1_2.png */; };
 		9C0F8AC918239BED00FEFABA /* hit1_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0F8AC618239BED00FEFABA /* hit1_3.png */; };
+		9C111B631841ACA6001E536A /* MenuBGLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C111B611841ACA6001E536A /* MenuBGLayer.cpp */; };
+		9C111B661841B357001E536A /* MainMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C111B641841B357001E536A /* MainMenu.plist */; };
+		9C111B671841B357001E536A /* MainMenu.pvr.ccz in Resources */ = {isa = PBXBuildFile; fileRef = 9C111B651841B357001E536A /* MainMenu.pvr.ccz */; };
+		9C111B6B1841B394001E536A /* HelpMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C111B691841B394001E536A /* HelpMenu.plist */; };
+		9C111B6C1841B394001E536A /* HelpMenu.pvr.ccz in Resources */ = {isa = PBXBuildFile; fileRef = 9C111B6A1841B394001E536A /* HelpMenu.pvr.ccz */; };
 		9C5D115F18181D4D00E2BA30 /* PlayerSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5D115D18181D4D00E2BA30 /* PlayerSprite.cpp */; };
 		9C5D11A018196B5400E2BA30 /* walk1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C5D119518196B5400E2BA30 /* walk1.png */; };
 		9C5D11A118196B5400E2BA30 /* walk2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C5D119618196B5400E2BA30 /* walk2.png */; };
@@ -392,6 +397,12 @@
 		9C0F8AC418239BED00FEFABA /* hit1_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit1_1.png; sourceTree = "<group>"; };
 		9C0F8AC518239BED00FEFABA /* hit1_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit1_2.png; sourceTree = "<group>"; };
 		9C0F8AC618239BED00FEFABA /* hit1_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit1_3.png; sourceTree = "<group>"; };
+		9C111B611841ACA6001E536A /* MenuBGLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MenuBGLayer.cpp; sourceTree = "<group>"; };
+		9C111B621841ACA6001E536A /* MenuBGLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuBGLayer.h; sourceTree = "<group>"; };
+		9C111B641841B357001E536A /* MainMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MainMenu.plist; sourceTree = "<group>"; };
+		9C111B651841B357001E536A /* MainMenu.pvr.ccz */ = {isa = PBXFileReference; lastKnownFileType = file; path = MainMenu.pvr.ccz; sourceTree = "<group>"; };
+		9C111B691841B394001E536A /* HelpMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HelpMenu.plist; sourceTree = "<group>"; };
+		9C111B6A1841B394001E536A /* HelpMenu.pvr.ccz */ = {isa = PBXFileReference; lastKnownFileType = file; path = HelpMenu.pvr.ccz; sourceTree = "<group>"; };
 		9C5D115D18181D4D00E2BA30 /* PlayerSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerSprite.cpp; sourceTree = "<group>"; };
 		9C5D115E18181D4D00E2BA30 /* PlayerSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSprite.h; sourceTree = "<group>"; };
 		9C5D119518196B5400E2BA30 /* walk1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = walk1.png; sourceTree = "<group>"; };
@@ -1114,6 +1125,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C111B681841B381001E536A /* GameHelp */ = {
+			isa = PBXGroup;
+			children = (
+				9C111B691841B394001E536A /* HelpMenu.plist */,
+				9C111B6A1841B394001E536A /* HelpMenu.pvr.ccz */,
+			);
+			name = GameHelp;
+			sourceTree = "<group>";
+		};
 		9C5D115C18181D1100E2BA30 /* CustomSprite */ = {
 			isa = PBXGroup;
 			children = (
@@ -1153,6 +1173,7 @@
 		9CF25E291816B5BA006E0404 /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				9C111B681841B381001E536A /* GameHelp */,
 				9CF25E0A18169B66006E0404 /* Joystick */,
 				9CF25E6B1817668C006E0404 /* GameOver */,
 				9CF25E6A18176664006E0404 /* GameMenu */,
@@ -1177,6 +1198,8 @@
 		9CF25E4718176597006E0404 /* MainMenu */ = {
 			isa = PBXGroup;
 			children = (
+				9C111B641841B357001E536A /* MainMenu.plist */,
+				9C111B651841B357001E536A /* MainMenu.pvr.ccz */,
 				9CF25E5E1817663B006E0404 /* exit1.png */,
 				9CF25E5F1817663B006E0404 /* exit2.png */,
 				9CF25E601817663B006E0404 /* help1.png */,
@@ -1216,6 +1239,8 @@
 				9CF25E7318176743006E0404 /* MenuScene.h */,
 				9CF25E7518176758006E0404 /* MenuItemLayer.cpp */,
 				9CF25E7618176758006E0404 /* MenuItemLayer.h */,
+				9C111B611841ACA6001E536A /* MenuBGLayer.cpp */,
+				9C111B621841ACA6001E536A /* MenuBGLayer.h */,
 			);
 			name = MenuScene;
 			sourceTree = "<group>";
@@ -2639,6 +2664,7 @@
 				9CF25E1C18169BC1006E0404 /* Arrow.png in Resources */,
 				9CF57CF91827CCE300344A79 /* hit2_1.png in Resources */,
 				9CFE932A18290F7400865E45 /* beingHit1_1.png in Resources */,
+				9C111B661841B357001E536A /* MainMenu.plist in Resources */,
 				9C5D11A818196B5400E2BA30 /* walk9.png in Resources */,
 				9C0F8AC718239BED00FEFABA /* hit1_1.png in Resources */,
 				9CF2605C18168D2300AC4B1B /* HelloWorld.png in Resources */,
@@ -2653,12 +2679,14 @@
 				9CFE9323182907D800865E45 /* hit4_6.png in Resources */,
 				9CE5215C1817764B00460CA5 /* kick1.png in Resources */,
 				9CF25E51181765F5006E0404 /* stop2.png in Resources */,
+				9C111B6C1841B394001E536A /* HelpMenu.pvr.ccz in Resources */,
 				9CF25E2518169BC1006E0404 /* Dock.png in Resources */,
 				9C5D11A318196B5400E2BA30 /* walk4.png in Resources */,
 				9CF25E2818169C1B006E0404 /* beetle.png in Resources */,
 				9C5D11A618196B5400E2BA30 /* walk7.png in Resources */,
 				9CF25E661817663B006E0404 /* help1.png in Resources */,
 				9CFE933E182914F300865E45 /* e_walk6.png in Resources */,
+				9C111B671841B357001E536A /* MainMenu.pvr.ccz in Resources */,
 				9CF25E641817663B006E0404 /* exit1.png in Resources */,
 				9CFE936118294E3000865E45 /* e_die3.png in Resources */,
 				9CF25E691817663B006E0404 /* play2.png in Resources */,
@@ -2691,6 +2719,7 @@
 				9CF2605818168D2300AC4B1B /* CloseSelected.png in Resources */,
 				9C0F8AC818239BED00FEFABA /* hit1_2.png in Resources */,
 				9CFE93681829F82E00865E45 /* e_hit1_2.png in Resources */,
+				9C111B6B1841B394001E536A /* HelpMenu.plist in Resources */,
 				9CF2606818168D2300AC4B1B /* Icon@2x.png in Resources */,
 				9CE7D2B618197DEE00363F3B /* die8.png in Resources */,
 				9CF2627D18168D2600AC4B1B /* project.pbxproj in Resources */,
@@ -2861,6 +2890,7 @@
 				9CF261FF18168D2500AC4B1B /* CCProfiling.cpp in Sources */,
 				9CF2618118168D2400AC4B1B /* CCAccelerometer.mm in Sources */,
 				9CF262F818168D2700AC4B1B /* CCControlStepper.cpp in Sources */,
+				9C111B631841ACA6001E536A /* MenuBGLayer.cpp in Sources */,
 				9CF261C618168D2500AC4B1B /* CCGLProgram.cpp in Sources */,
 				9CF2609D18168D2300AC4B1B /* CCActionTween.cpp in Sources */,
 				9CF262C518168D2600AC4B1B /* CCParticleSystemQuadLoader.cpp in Sources */,

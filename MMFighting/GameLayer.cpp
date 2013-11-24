@@ -226,20 +226,24 @@ void GameLayer::handAction(CCObject *pScene){
                 {
                     if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
                     {
-                        if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
+                        if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
                         {
-                            ActionState actionState;
-                            if (playerSprite->actionType == kActionTypeHit_1 || playerSprite->actionType == kActionTypeHit_3) {
-                                actionState = kActionStateBeingHit_1;
+                            if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
+                            {
+                                ActionState actionState;
+                                if (playerSprite->actionType == kActionTypeHit_1 || playerSprite->actionType == kActionTypeHit_3) {
+                                    actionState = kActionStateBeingHit_1;
+                                }
+                                if (playerSprite->actionType == kActionTypeHit_2) {
+                                    actionState = kActionStateBeingHit_2;
+                                }
+                                if (playerSprite->actionType == kActionTypeHit_4) {
+                                    actionState = kActionStateDie;
+                                }
+//                              CCLog("action---------------------------");
+                                testSprite->setAnimateAction(actionState);
                             }
-                            if (playerSprite->actionType == kActionTypeHit_2) {
-                                actionState = kActionStateBeingHit_2;
-                            }
-                            if (playerSprite->actionType == kActionTypeHit_4) {
-                                actionState = kActionStateDie;
-                            }
-//                          CCLog("action---------------------------");
-                            testSprite->setAnimateAction(actionState);
+
                         }
                     }
                 }
@@ -252,9 +256,6 @@ void GameLayer::handAction(CCObject *pScene){
 void GameLayer::footAction(CCObject *pScene){
     CCLOG("foot");
     /*
-=======
-    
->>>>>>> 313251d669c7cab58d31df4ab300172ff454b95d
     testSprite->setAnimateAction(kActionStateHit1);
     if (testSprite->actionState == kActionStateHit1) {
         if (playerSprite->actionType != kActionTypeDie) {
@@ -265,7 +266,6 @@ void GameLayer::footAction(CCObject *pScene){
             }
         }
     }
-<<<<<<< HEAD
      */
 }
 //敌人AI
