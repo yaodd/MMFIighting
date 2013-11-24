@@ -47,7 +47,7 @@ void EnemySprite::myInit(){
     walkAnimate = getAnimate(11, walkImageName, 0.1f);
     walkAnimate->retain();
     
-    dieAnimate = getAnimate(3, dieImageName, 0.3f);
+    dieAnimate = getAnimate(3, dieImageName, 0.5f);
     dieAnimate->retain();
     
     beingHitAnimate_1 = getAnimate(1, beingHit1ImageName, 0.4f);
@@ -63,6 +63,8 @@ void EnemySprite::myInit(){
     this->setAttackBox(this->createBoundingBoxWithOrigin(ccp(CENTER_TO_SIDE, -10), CCSizeMake(20, 20)));
 
     _nextDecisionTime = 0;
+    
+    this->setWalkSpeed(100.0);
     
 }
 
@@ -121,6 +123,7 @@ void EnemySprite::setAnimateAction(ActionState actionState)
             }
     else if (this->actionState == kActionStateNone){
         this->runAction(runAnimate);
+        _velocity = CCPointZero;
     }
     else{
 //        CCLOG("1");
@@ -171,33 +174,37 @@ void EnemySprite::setPosition(CCPoint position)
     CCSprite::setPosition(position);
     this->transformBoxes();
 }
+void EnemySprite::update(float dt){
+    if (actionState == kActionStateWalk) {
+        CCPoint point = this->getPosition();
+        CCPoint resultPoint = ccpAdd(this->getPosition(),ccpMult(_velocity, dt));
+        if (resultPoint.x - CENTER_TO_SIDE >= 0 && resultPoint.x + CENTER_TO_SIDE <= MAP_WIDTH) {
+            point.x = resultPoint.x;
+        }
+        if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y + CENTER_TO_BOTTOM <= MAP_HEIGHT) {
+            point.y = resultPoint.y;
+        }
+        _desiredPosition = point;
+    }
+}
 void EnemySprite::walkWithDirection(CCPoint direction){
-    if (actionState == kActionStateNone) {
+    if (actionState == kActionStateNone)
+    {
         this->stopAllActions();
+        //        this->runAction(walkAnimate);
+        actionState = kActionStateWalk;
         this->setAnimateAction(kActionStateWalk);
     }
-    if (actionState == kActionStateWalk) {
-        _velocity = ccp(direction.x * 3, direction.y * 3);
-        if (_velocity.x >= 0) {
+    if (actionState == kActionStateWalk)
+    {
+        _velocity = ccp(direction.x * _walkSpeed, direction.y * _walkSpeed);
+        if (_velocity.x >= 0)
+        {
             this->setScaleX(-1.0);
-        } else{
+        }
+        else
+        {
             this->setScaleX(1.0);
         }
-        /*
-        this->setAnimateAction(actionState);
-        CCPoint point = this->getPosition();
-        
-        float resultX = point.x + direction.x * 20;
-        float resultY = point.y + direction.y * 20;
-        //        CCLOG("x %f y %f",point.x,point.y);
-        if (resultX - CENTER_TO_SIDE >= 0 && resultX+ CENTER_TO_SIDE <= 2048) {
-            point.x = resultX;
-            CCLOG("in1");
-        }
-        if (resultY - CENTER_TO_BOTTOM >= 0 && resultY + CENTER_TO_BOTTOM <= 1534) {
-            point.y = resultY;
-        }
-        this->setPosition(point);
-         */
     }
 }

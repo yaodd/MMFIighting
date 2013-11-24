@@ -26,7 +26,7 @@ public:
     
     void playAction(CCObject *pScene);  
     void helpAction(CCObject *pScene);
-    void exitAction(CCObject *pScene);
+    void continueAction(CCObject *pScene);
     
     
 };

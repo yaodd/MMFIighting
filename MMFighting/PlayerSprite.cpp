@@ -17,7 +17,7 @@ const char hit3ImageName[20] = "hit3_";
 const char hit4ImageName[20] = "hit4_";
 const char beingHit1ImageName[20] = "beingHit1_";
 const char beingHit2ImageName[20] = "beingHit2_";
-
+const char superHitImageName[20] = "super_hit_";
 PlayerSprite::PlayerSprite()
 {
     this->myInit();
@@ -71,10 +71,15 @@ void PlayerSprite::myInit()
     beingHitAnimate_2 = getAnimate(1, beingHit2ImageName, 0.4f);
     beingHitAnimate_2->retain();
     
+    superHitAnimate = getAnimate(9, superHitImageName, 0.1f);
+    superHitAnimate->retain();
+    
     this->setHitbox(this->createBoundingBoxWithOrigin(ccp(-CENTER_TO_SIDE, -CENTER_TO_BOTTOM),
                                                       CCSizeMake(CENTER_TO_SIDE * 2, CENTER_TO_BOTTOM * 2)));
     this->setAttackBox(this->createBoundingBoxWithOrigin(ccp(CENTER_TO_SIDE, -10), CCSizeMake(20, 20)));
     beingHitCount = 0;
+    this->setWalkSpeed(150.0);
+    
 }
 
 CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt)
@@ -135,6 +140,8 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
         case kActionTypeBeingHit_2:
             runAnimate = beingHitAnimate_2;
             break;
+        case kActionSuperHit:
+            runAnimate = superHitAnimate;
         default:
             break;
     }
@@ -145,13 +152,15 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
     }
     else if (this->actionType == kActionTypeNone){
         this->runAction(runAnimate);
+        _velocity = CCPointZero;
     }
     else{
         CCLog("bbbbbbb");
         CCObject *finished = CCCallFunc::create(this, callfunc_selector(PlayerSprite::runFinishedCallBack));
 //        finished->retain();
-        runAnimate->retain();
+//        runAnimate->retain();
         CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
+//        runArray->retain();
         this->runAction(CCSequence::create(runArray));
         CCLog("sssssss");
     }
@@ -194,4 +203,38 @@ void PlayerSprite::setPosition(CCPoint position)
 {
     CCSprite::setPosition(position);
     this->transformBoxes();
+}
+void PlayerSprite::update(float dt){
+    if (actionType == kActionTypeWalk) {
+        CCPoint point = this->getPosition();
+        CCPoint resultPoint = ccpAdd(this->getPosition(),ccpMult(_velocity, dt));
+        if (resultPoint.x - CENTER_TO_SIDE >= 0 && resultPoint.x + CENTER_TO_SIDE <= MAP_WIDTH) {
+            point.x = resultPoint.x;
+        }
+        if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y + CENTER_TO_BOTTOM <= MAP_HEIGHT) {
+            point.y = resultPoint.y;
+        }
+        _desiredPosition = point;
+    }
+}
+void PlayerSprite::walkWithDirection(CCPoint direction){
+    if (actionType == kActionTypeNone)
+    {
+        this->stopAllActions();
+//        this->runAction(walkAnimate);
+        actionType = kActionTypeWalk;
+        this->setAnimateAction(kActionTypeWalk);
+    }
+    if (actionType == kActionTypeWalk)
+    {
+        _velocity = ccp(direction.x * _walkSpeed, direction.y * _walkSpeed);
+        if (_velocity.x >= 0)
+        {
+            this->setScaleX(-1.0);
+        }
+        else
+        {
+            this->setScaleX(1.0);
+        }
+    }
 }

@@ -13,6 +13,7 @@
 #include "CCJoystick.h"
 #include "PlayerSprite.h"
 #include "EnemySprite.h"
+#include "AudioManager.h"
 
 
 
@@ -23,6 +24,8 @@ class GameLayer : public CCLayer, public CCJoyStickDelegate
 public:
     GameLayer();
     ~GameLayer();
+    
+    AudioManager *audioManager;
     
     virtual bool init();
     CREATE_FUNC(GameLayer);
@@ -51,6 +54,10 @@ public:
 //    CCSpriteBatchNode *playerNode;
     
     void initEnemys();
+    
+    void initEffects();
+    
+    void playEffect(int i);
     
     
     

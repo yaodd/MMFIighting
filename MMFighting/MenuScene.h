@@ -10,6 +10,7 @@
 #define __MMFighting__MenuScene__
 
 #include "cocos2d.h"
+#include "AudioManager.h"
 using namespace cocos2d;
 class MenuScene : public :: CCScene
 {
@@ -19,6 +20,8 @@ public:
     
     virtual bool init();
     CREATE_FUNC(MenuScene);
+    
+    AudioManager *audioManager;
 };
 
 #endif /* defined(__MMFighting__MenuScene__) */

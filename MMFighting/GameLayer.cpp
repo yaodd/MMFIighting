@@ -9,9 +9,10 @@
 #include "GameLayer.h"
 #include "CCAnimation.h"
 #include "Defines.h"
-
+#include "SimpleAudioEngine.h"
 
 using namespace cocos2d;
+using namespace CocosDenshion;
 
 #define BALL_RADIUS 25
 #define MOVE_AREA_RADIUS 200
@@ -27,7 +28,7 @@ using namespace cocos2d;
 const char ballImageName[20] = "Ball_hl.png";
 const char dockImageName[20] = "Joystick.png";
 const char stickImageName[20] = "Stick.jpg";
-const char bgImageName[20] = "gameBg.jpg";
+const char bgImageName[20] = "gameBackground.png";
 const char handImageNameNor[20] = "hand1.png";
 const char footImageNameNor[20] = "foot1.png";
 const char handImageNamePre[20] = "hand2.png";
@@ -36,6 +37,12 @@ const char initImageNames[10][20] = {"e_initial.png","","","","","","","","",""}
 const char initImageName[20] = "initial.png";
 const char actionTPName[20] = "action.pvr.ccz";
 const char actionPlistName[20] = "action.plist";
+const char effect1[20] = "effect1.mp3";
+const char effect2[20] = "effect2.mp3";
+const char effect3[20] = "effect3.mp3";
+const char effect4[20] = "effect4.mp3";
+const char effect5[20] = "effect5.mp3";
+const char effect6[20] = "effect6.mp3";
 
 GameLayer::GameLayer(){
 //    this->init();
@@ -50,29 +57,38 @@ bool GameLayer::init(){
     do {
         
         winSize = CCDirector::sharedDirector()->getWinSize();
-        
+        audioManager = AudioManager::sharedManager();
+        this->initEffects();
         CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(actionPlistName);
         _actors = CCSpriteBatchNode::create(actionTPName);
         _actors->getTexture()->setAliasTexParameters();
-        this->addChild(_actors, 5);
+        this->addChild(_actors, 1);
         
-        CCSprite *background = CCSprite::create(bgImageName);
+        CCSprite *background = CCSprite::createWithSpriteFrameName(bgImageName);
         background->setPosition(ccp(winSize.width / 2, winSize.height / 2));
         this->addChild(background,0);
+        CCLOG("ddddddddd");
+        
+        
+        
+        
+        playerSprite = PlayerSprite::playSprite();
+        playerSprite->setPosition(ccp(300, 300));
+        playerSprite->setDesiredPosition(playerSprite->getPosition());
+        playerSprite->setTag(PLAYER_TAG);
+        _actors->addChild(playerSprite);
+        playerSprite->setAnimateAction(kActionTypeNone);
+        
+        _enemys = NULL;
+        this->initEnemys();
         
         joyStick = CCJoystick::create( BALL_RADIUS, MOVE_AREA_RADIUS, IS_FOLLOW_TOUCH, IS_CAN_VISIBLE, IS_AUTO_HIDE, HAS_ANIMATION);
-//        joyStick->setBallTexture(ballImageName);
+        //        joyStick->setBallTexture(ballImageName);
         joyStick->setDockTexture(dockImageName);
         joyStick->setStickTexture(stickImageName);
         joyStick->setPosition(300, 300);
         joyStick->setDelegate(this);
-        this->addChild(joyStick);
-        
-        playerSprite = PlayerSprite::playSprite();
-        playerSprite->setPosition(ccp(winSize.width / 2, winSize.height / 2));
-        playerSprite->setTag(PLAYER_TAG);
-        _actors->addChild(playerSprite);
-
+        this->addChild(joyStick,2);
         
         CCSprite *handSpriteNor = CCSprite::create(handImageNameNor);
         CCSprite *handSpritePre = CCSprite::create(handImageNamePre);
@@ -84,17 +100,17 @@ bool GameLayer::init(){
         CCMenu *hitMenu = CCMenu::create(handButton,footButton,NULL);
         hitMenu->setPosition(ccp(2048 - 300, 300));
         hitMenu->alignItemsHorizontallyWithPadding(20);
-        this->addChild(hitMenu);
+        this->addChild(hitMenu,2);
         
 //        testSprite = EnemySprite::enemySprite(0);
 //        testSprite->setPosition(ccp(winSize.width / 3 * 2, winSize.height / 2));
 //        this->addChild(testSprite); //(int)(768 * 2 - testSprite->getPosition().y));
 //        testSprite->setZOrder((int)(768 * 2 - testSprite->getPosition().y));
         
-        _enemys = CCArray::create();
-//        enemyNode = CCSpriteBatchNode::create(initImageNames[0]);
+        
+        //        enemyNode = CCSpriteBatchNode::create(initImageNames[0]);
 //        this->addChild(enemyNode,100);
-        this->initEnemys();
+        
         
         this->scheduleUpdate();
         pRet = true;
@@ -103,33 +119,57 @@ bool GameLayer::init(){
     return pRet;
 }
 
+void GameLayer::initEffects(){
+    SimpleAudioEngine::sharedEngine()->preloadEffect(effect1);
+    SimpleAudioEngine::sharedEngine()->preloadEffect(effect2);
+    SimpleAudioEngine::sharedEngine()->preloadEffect(effect3);
+    SimpleAudioEngine::sharedEngine()->preloadEffect(effect4);
+    SimpleAudioEngine::sharedEngine()->preloadEffect(effect5);
+    SimpleAudioEngine::sharedEngine()->preloadEffect(effect6);
+
+}
+void GameLayer::playEffect(int i){
+    CCString *string = CCString::createWithFormat("effect%d.mp3",i);
+    const char *effect = string->getCString();
+    SimpleAudioEngine::sharedEngine()->playEffect(effect, false);
+}
+
 void GameLayer::update(float dt){
 //    CCLog("update");
+    
+
+    playerSprite->update(dt);
+    this->updateEnemys(dt);
+    this->updatePositions(dt);
     CCObject *pObject = NULL;
     CCARRAY_FOREACH(_actors->getChildren(), pObject){
         CCSprite *sprite = (CCSprite *)pObject;
         _actors->reorderChild(sprite, (int)(768 * 2 - sprite->getPosition().y));
     }
-    this->updateEnemys(dt);
-    this->updatePositions(dt);
+    
+    
+    
     
 }
 
 void GameLayer::initEnemys(){
-    int enemyCount = 50;
+    int enemyCount = 5;
     this->setEnemys(CCArray::createWithCapacity(enemyCount));
     
     for (int i = 0; i < enemyCount; i ++) {
         EnemySprite *enemy = EnemySprite::enemySprite(0);
-        int minX = CENTER_TO_SIDE;
-        int maxX = winSize.width - CENTER_TO_SIDE;
-        int minY = CENTER_TO_BOTTOM;
-        int maxY = winSize.height - CENTER_TO_BOTTOM;
-        enemy->setPosition(ccp(random_range(minX, maxX), random_range(minY, maxY)));
-//        enemyNode->addChild(enemy);
-        enemy->setTag(ENEMY_TAG);
         _actors->addChild(enemy);
         _enemys->addObject(enemy);
+        int minX = CENTER_TO_SIDE + MAP_WIDTH / 2;
+        int maxX = MAP_WIDTH - CENTER_TO_SIDE;
+        int minY = CENTER_TO_BOTTOM;
+        int maxY = MAP_HEIGHT - CENTER_TO_BOTTOM;
+        enemy->setPosition(ccp(random_range(minX, maxX), random_range(minY, maxY)));
+        enemy->setDesiredPosition(enemy->getPosition());
+//        enemyNode->addChild(enemy);
+        enemy->setTag(ENEMY_TAG);
+        
+        enemy->setAnimateAction(kActionStateNone);
         
         
         
@@ -142,6 +182,8 @@ void GameLayer::onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint directio
 //    CCLOG("angle %f",angle);
 //    CCLOG("point %f %f",direction.x,direction.y);
 //    CCLOG("power %f",power);
+    playerSprite->walkWithDirection(direction);
+    /*
     if (playerSprite->actionType == kActionTypeNone || playerSprite->actionType == kActionTypeWalk) {
         if (playerSprite->actionType == kActionTypeNone) {
             playerSprite->setAnimateAction(kActionTypeWalk);
@@ -169,6 +211,7 @@ void GameLayer::onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint directio
         }
 
     }
+     */
     
     
 }
@@ -176,7 +219,8 @@ void GameLayer::onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint directio
 void GameLayer::onCCJoyStickActivated(CCNode *sender){
     CCLOG("activated");
 //    testSprite->setZOrder((int)(768 * 2 - testSprite->getPosition().y));
-    playerSprite->setAnimateAction(kActionTypeWalk);
+//    playerSprite->setAnimateAction(kActionTypeWalk);
+//    playerSprite->walkWithDirection(<#cocos2d::CCPoint direction#>)
 }
 
 void GameLayer::onCCJoyStickDeactivated(CCNode *sender){
@@ -224,24 +268,28 @@ void GameLayer::handAction(CCObject *pScene){
             {
                 if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
                 {
-                    if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
+                    if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
                     {
-                        if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
-                        {
-                            ActionState actionState;
-                            if (playerSprite->actionType == kActionTypeHit_1 || playerSprite->actionType == kActionTypeHit_3) {
-                                actionState = kActionStateBeingHit_1;
-                            }
-                            if (playerSprite->actionType == kActionTypeHit_2) {
-                                actionState = kActionStateBeingHit_2;
-                            }
-                            if (playerSprite->actionType == kActionTypeHit_4) {
-                                actionState = kActionStateDie;
-                            }
-//                          CCLog("action---------------------------");
-                            testSprite->setAnimateAction(actionState);
+                        ActionState actionState;
+                        int i = 0;
+                        if (playerSprite->actionType == kActionTypeHit_1 || playerSprite->actionType == kActionTypeHit_3) {
+                            actionState = kActionStateBeingHit_1;
+                            i = 1;
                         }
+                        if (playerSprite->actionType == kActionTypeHit_2) {
+                            actionState = kActionStateBeingHit_2;
+                            i = 2;
+                        }
+                        if (playerSprite->actionType == kActionTypeHit_4) {
+                            actionState = kActionStateDie;
+                            i = 3;
+                        }
+                        //                              CCLog("action---------------------------");
+                        testSprite->setAnimateAction(actionState);
+//                        this->playEffect(i);
+                        audioManager->playEffect(i);
                     }
+
                 }
             }
         }
@@ -251,22 +299,41 @@ void GameLayer::handAction(CCObject *pScene){
 
 void GameLayer::footAction(CCObject *pScene){
     CCLOG("foot");
-    /*
-=======
-    
->>>>>>> 313251d669c7cab58d31df4ab300172ff454b95d
-    testSprite->setAnimateAction(kActionStateHit1);
-    if (testSprite->actionState == kActionStateHit1) {
-        if (playerSprite->actionType != kActionTypeDie) {
-            if (fabs(testSprite->getPosition().y - testSprite->getPosition().y) < 20) {
-                if (testSprite->getAttackBox().actual.intersectsRect(playerSprite->getHitbox().actual)){
-                    playerSprite->setAnimateAction(kActionTypeDie);
+    if (playerSprite->actionType != kActionTypeDie && playerSprite->actionType != kActionSuperHit) {
+        playerSprite->setAnimateAction(kActionSuperHit);
+    }
+    CCObject *pObject = NULL;
+    EnemySprite *testSprite = NULL;
+    CCARRAY_FOREACH(_enemys, pObject){
+        testSprite = (EnemySprite *)pObject;
+        //            CCLog("%f %f",testSprite->getPosition().x,testSprite->getPosition().y);
+        
+        if (testSprite->actionState != kActionStateDie)
+        {
+            if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 50)
+            {
+                if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
+                {
+                    ActionState actionState;
+                    actionState = kActionStateDie;
+                    testSprite->setAnimateAction(actionState);
+//                    this->playEffect(6);
+                    audioManager->playEffect(6);
                 }
+                playerSprite->transformBoxes();
+                if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
+                {
+                    ActionState actionState;
+                    actionState = kActionStateDie;
+                    testSprite->setAnimateAction(actionState);
+                    //                    this->playEffect(6);
+                    audioManager->playEffect(6);
+                }
+                playerSprite->transformBoxes();
             }
         }
     }
-<<<<<<< HEAD
-     */
+
 }
 //敌人AI
 void GameLayer::updateEnemys(float dt){
@@ -275,9 +342,11 @@ void GameLayer::updateEnemys(float dt){
     float distanceSQ;
     int randomChoice = 0;
     CCObject *pObject = NULL;
-    EnemySprite *enemy = NULL;
+//    EnemySprite *enemy = NULL;
+//    CCLOG("enemy num %d",_enemys->count());
     CCARRAY_FOREACH(_enemys, pObject){
-        enemy = (EnemySprite *)pObject;
+        EnemySprite *enemy = (EnemySprite *)pObject;
+        enemy->update(dt);
         if (enemy->actionState != kActionStateDie) {
             //1
             alive++;
@@ -297,30 +366,28 @@ void GameLayer::updateEnemys(float dt){
                         //4
                         enemy->setNextDecisionTime(enemy->getNextDecisionTime() + frandom_range(0.1,0.5) * 2000);
 //                        CCLog("before");
-                        if (enemy->actionState != kActionStateDie && enemy->actionState != kActionStateBeingHit_1 && enemy->actionState != kActionStateBeingHit_2) {
-                            
-                        }
-                        
+                        enemy->setAnimateAction(kActionStateHit1);
 //                        CCLog("after");
-                        if (enemy->actionState != kActionStateDie && enemy->actionState != kActionStateBeingHit_1 && enemy->actionState != kActionStateBeingHit_2 && enemy->actionState != kActionStateWalk) {
-                            enemy->setAnimateAction(kActionStateHit1);
+                        if (enemy->actionState == kActionStateHit1 && (playerSprite->actionType != kActionTypeHit_1 && playerSprite->actionType != kActionTypeHit_2 && playerSprite->actionType != kActionTypeHit_3 && playerSprite->actionType != kActionTypeHit_4 && playerSprite->actionType != kActionSuperHit)) {
+//                            enemy->setAnimateAction(kActionStateHit1);
                             if (fabsf(playerSprite->getPosition().y - enemy->getPosition().y) < 30) {
                                 if (enemy->getAttackBox().actual.intersectsRect(playerSprite->getHitbox().actual)) {
                                     CCLOG("being_hit ,%f %f %f %f",enemy->getAttackBox().actual.origin.x,enemy->getAttackBox().actual.origin.y,playerSprite->getHitbox().actual.origin.x,playerSprite->getHitbox().actual.origin.y);
 
                                     ActionType actionType;
+                                    int i = 0;
                                     if (playerSprite->actionType == kActionTypeNone || playerSprite->actionType == kActionTypeWalk || playerSprite->actionType == kActionTypeBeingHit_2) {
                                         actionType = kActionTypeBeingHit_1;
-//                                        playerSprite->setAnimateAction(kActionTypeBeingHit_1);
+                                        i = 1;
                                     }
                                     else if (playerSprite->actionType == kActionTypeBeingHit_1) {
-//                                        playerSprite->setAnimateAction(kActionTypeBeingHit_2);
-//                                        CCLOG("beingHit_2");
                                         actionType = kActionTypeBeingHit_2;
+                                        i = 2;
                                     }
-                                    playerSprite->retain();
+//                                    playerSprite->retain();
                                     playerSprite->setAnimateAction(actionType);
-                                    
+//                                    this->playEffect(i);
+                                    audioManager->playEffect(i);
                                     CCLOG("finished");
                                 }
                             }
@@ -352,17 +419,13 @@ void GameLayer::updateEnemys(float dt){
 }
 
 void GameLayer::updatePositions(float dt){
+    playerSprite->setPosition(playerSprite->getDesiredPosition());
     CCObject *pObject = NULL;
     EnemySprite *enemy = NULL;
     CCARRAY_FOREACH(_enemys, pObject){
         enemy = (EnemySprite *)pObject;
-        CCPoint point = enemy->getPosition();
+        enemy->setPosition(enemy->getDesiredPosition());
         
-        float resultX = point.x + enemy->getVelocity().x;
-        float resultY = point.y + enemy->getVelocity().y;
-        if (enemy->actionState == kActionStateWalk) {
-            enemy->setPosition(ccp(resultX, resultY));
-        }
         
     }
 }

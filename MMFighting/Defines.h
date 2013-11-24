@@ -17,6 +17,10 @@ typedef struct _BoundingBox{
     CCRect actual;
     CCRect original;
 } BoundingBox;
+
+#define MAP_WIDTH   2048.0f
+#define MAP_HEIGHT  400.f
+
 #define CENTER_TO_BOTTOM 78.0f
 #define CENTER_TO_SIDE 40.0f
 

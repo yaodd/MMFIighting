@@ -12,6 +12,7 @@
 #include <iostream>
 #include <cocos2d.h>
 #include "CCJoystick.h"
+#include "AudioManager.h"
 using namespace cocos2d;
 class GameScene : public CCScene
 {
@@ -21,6 +22,8 @@ public:
     
     virtual bool init();
     CREATE_FUNC(GameScene);
+    
+    AudioManager *audioManager;
     
 };
 #endif /* defined(__MMFighting__GameScene__) */
