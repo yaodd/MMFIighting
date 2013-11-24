@@ -129,7 +129,6 @@ void GameLayer::initEnemys(){
 //        enemyNode->addChild(enemy);
         enemy->setTag(ENEMY_TAG);
         _actors->addChild(enemy);
-        
         _enemys->addObject(enemy);
         
         
@@ -221,7 +220,9 @@ void GameLayer::handAction(CCObject *pScene){
             testSprite = (EnemySprite *)pObject;
 //            CCLog("%f %f",testSprite->getPosition().x,testSprite->getPosition().y);
         
-            if (testSprite->actionState != kActionStateDie)
+        if (testSprite->actionState != kActionStateDie)
+        {
+            if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
             {
                 if (fabsf(playerSprite->getPosition().y - testSprite->getPosition().y) < 20)
                 {
