@@ -87,6 +87,7 @@ void UiLayer::toggleWithTheMusic(CCObject* pObject){
     if(musicButton->selectedItem() == musicOpen){
         CCLog("开启");
         audioManager->effectIsOn = true;
+        audioManager->resumeMusic();
     }else{
         CCLog("关闭");
         audioManager->effectIsOn = false;

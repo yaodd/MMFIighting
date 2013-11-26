@@ -32,6 +32,8 @@
 		9C51E7D61843A9AE003F2130 /* menuMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9C51E7D51843A9AE003F2130 /* menuMusic.mp3 */; };
 		9C51E7D81843ACCD003F2130 /* gameMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 9C51E7D71843ACCD003F2130 /* gameMusic.mp3 */; };
 		9C51E7E21843B094003F2130 /* AudioManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C51E7E01843B094003F2130 /* AudioManager.cpp */; };
+		9C51E7E918444167003F2130 /* action.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C51E7E718444167003F2130 /* action.plist */; };
+		9C51E7EA18444167003F2130 /* action.pvr.ccz in Resources */ = {isa = PBXBuildFile; fileRef = 9C51E7E818444167003F2130 /* action.pvr.ccz */; };
 		9C5D115F18181D4D00E2BA30 /* PlayerSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5D115D18181D4D00E2BA30 /* PlayerSprite.cpp */; };
 		9C5D11A018196B5400E2BA30 /* walk1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C5D119518196B5400E2BA30 /* walk1.png */; };
 		9C5D11A118196B5400E2BA30 /* walk2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C5D119618196B5400E2BA30 /* walk2.png */; };
@@ -371,8 +373,6 @@
 		9CF263F618168E4E00AC4B1B /* CCJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF263F418168E4E00AC4B1B /* CCJoystick.cpp */; };
 		9CF263F91816923200AC4B1B /* GameScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF263F71816923200AC4B1B /* GameScene.cpp */; };
 		9CF263FC1816983400AC4B1B /* GameLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF263FA1816983400AC4B1B /* GameLayer.cpp */; };
-		9CF2D667183D00B80026502F /* action.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CF2D665183D00B80026502F /* action.plist */; };
-		9CF2D66A183D02C20026502F /* action.pvr.ccz in Resources */ = {isa = PBXBuildFile; fileRef = 9CF2D669183D02C20026502F /* action.pvr.ccz */; };
 		9CF57CF91827CCE300344A79 /* hit2_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CF57CF71827CCE300344A79 /* hit2_1.png */; };
 		9CF57CFC1827E1F600344A79 /* hit3_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CF57CFB1827E1F600344A79 /* hit3_1.png */; };
 		9CF57D021827E7FE00344A79 /* EnemySprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF57D001827E7FE00344A79 /* EnemySprite.cpp */; };
@@ -437,6 +437,8 @@
 		9C51E7D71843ACCD003F2130 /* gameMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = gameMusic.mp3; sourceTree = "<group>"; };
 		9C51E7E01843B094003F2130 /* AudioManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioManager.cpp; sourceTree = "<group>"; };
 		9C51E7E11843B094003F2130 /* AudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioManager.h; sourceTree = "<group>"; };
+		9C51E7E718444167003F2130 /* action.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = action.plist; sourceTree = "<group>"; };
+		9C51E7E818444167003F2130 /* action.pvr.ccz */ = {isa = PBXFileReference; lastKnownFileType = file; path = action.pvr.ccz; sourceTree = "<group>"; };
 		9C5D115D18181D4D00E2BA30 /* PlayerSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerSprite.cpp; sourceTree = "<group>"; };
 		9C5D115E18181D4D00E2BA30 /* PlayerSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSprite.h; sourceTree = "<group>"; };
 		9C5D119518196B5400E2BA30 /* walk1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = walk1.png; sourceTree = "<group>"; };
@@ -1098,8 +1100,6 @@
 		9CF263F81816923200AC4B1B /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		9CF263FA1816983400AC4B1B /* GameLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameLayer.cpp; sourceTree = "<group>"; };
 		9CF263FB1816983400AC4B1B /* GameLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameLayer.h; sourceTree = "<group>"; };
-		9CF2D665183D00B80026502F /* action.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = action.plist; sourceTree = "<group>"; };
-		9CF2D669183D02C20026502F /* action.pvr.ccz */ = {isa = PBXFileReference; lastKnownFileType = file; path = action.pvr.ccz; sourceTree = "<group>"; };
 		9CF57CF71827CCE300344A79 /* hit2_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit2_1.png; sourceTree = "<group>"; };
 		9CF57CFB1827E1F600344A79 /* hit3_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit3_1.png; sourceTree = "<group>"; };
 		9CF57D001827E7FE00344A79 /* EnemySprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EnemySprite.cpp; sourceTree = "<group>"; };
@@ -1270,8 +1270,8 @@
 		9CF25E2C1816B6E9006E0404 /* Action */ = {
 			isa = PBXGroup;
 			children = (
-				9CF2D669183D02C20026502F /* action.pvr.ccz */,
-				9CF2D665183D00B80026502F /* action.plist */,
+				9C51E7E718444167003F2130 /* action.plist */,
+				9C51E7E818444167003F2130 /* action.pvr.ccz */,
 				9CFE93451829152100865E45 /* Enemy */,
 				9CFE93441829150000865E45 /* Player */,
 			);
@@ -2700,7 +2700,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CF2D667183D00B80026502F /* action.plist in Resources */,
 				9C5D11A218196B5400E2BA30 /* walk3.png in Resources */,
 				9CFE9340182914F300865E45 /* e_walk8.png in Resources */,
 				9CF2606618168D2300AC4B1B /* Icon.png in Resources */,
@@ -2716,7 +2715,6 @@
 				9CE521621817764B00460CA5 /* kick8.png in Resources */,
 				9C5D11A018196B5400E2BA30 /* walk1.png in Resources */,
 				9CE7D2B418197DEE00363F3B /* die5.png in Resources */,
-				9CF2D66A183D02C20026502F /* action.pvr.ccz in Resources */,
 				9CF25E5518176604006E0404 /* hp2.png in Resources */,
 				9CE7D2B718197DEE00363F3B /* die7.png in Resources */,
 				9CF25E5B18176622006E0404 /* continue2.png in Resources */,
@@ -2784,6 +2782,7 @@
 				9C51E7D31843A573003F2130 /* effect6.mp3 in Resources */,
 				9C111B671841B357001E536A /* MainMenu.pvr.ccz in Resources */,
 				9C51E7D01843A573003F2130 /* effect3.mp3 in Resources */,
+				9C111B671841B357001E536A /* MainMenu.pvr.ccz in Resources */,
 				9CF25E641817663B006E0404 /* exit1.png in Resources */,
 				9CFE936118294E3000865E45 /* e_die3.png in Resources */,
 				9CF25E691817663B006E0404 /* play2.png in Resources */,
@@ -2801,12 +2800,14 @@
 				9CFE9343182914F300865E45 /* e_walk11.png in Resources */,
 				9CF25E1D18169BC1006E0404 /* style2_dock_hl.png in Resources */,
 				9CE5215F1817764B00460CA5 /* kick4.png in Resources */,
+				9C51E7E918444167003F2130 /* action.plist in Resources */,
 				9CFE93541829175F00865E45 /* e_beingHit1_1.png in Resources */,
 				9C51E7D81843ACCD003F2130 /* gameMusic.mp3 in Resources */,
 				9C51E7CE1843A573003F2130 /* effect1.mp3 in Resources */,
 				9CFE93671829F82E00865E45 /* e_hit1_1.png in Resources */,
 				9CFE9320182907D800865E45 /* hit4_3.png in Resources */,
 				9CFE9342182914F300865E45 /* e_walk10.png in Resources */,
+				9C51E7EA18444167003F2130 /* action.pvr.ccz in Resources */,
 				9CF25E5A18176622006E0404 /* continue1.png in Resources */,
 				9C5D11B01819776E00E2BA30 /* hand2.png in Resources */,
 				9CF2605A18168D2300AC4B1B /* Default.png in Resources */,
