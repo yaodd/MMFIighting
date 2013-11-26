@@ -86,7 +86,7 @@ bool GameLayer::init(){
         //        joyStick->setBallTexture(ballImageName);
         joyStick->setDockTexture(dockImageName);
         joyStick->setStickTexture(stickImageName);
-        joyStick->setPosition(300, 300);
+        joyStick->setPosition(200, 200);
         joyStick->setDelegate(this);
         this->addChild(joyStick,2);
         
@@ -101,16 +101,6 @@ bool GameLayer::init(){
         hitMenu->setPosition(ccp(2048 - 300, 300));
         hitMenu->alignItemsHorizontallyWithPadding(20);
         this->addChild(hitMenu,2);
-        
-//        testSprite = EnemySprite::enemySprite(0);
-//        testSprite->setPosition(ccp(winSize.width / 3 * 2, winSize.height / 2));
-//        this->addChild(testSprite); //(int)(768 * 2 - testSprite->getPosition().y));
-//        testSprite->setZOrder((int)(768 * 2 - testSprite->getPosition().y));
-        
-        
-        //        enemyNode = CCSpriteBatchNode::create(initImageNames[0]);
-//        this->addChild(enemyNode,100);
-        
         
         this->scheduleUpdate();
         pRet = true;
@@ -146,10 +136,6 @@ void GameLayer::update(float dt){
         CCSprite *sprite = (CCSprite *)pObject;
         _actors->reorderChild(sprite, (int)(768 * 2 - sprite->getPosition().y));
     }
-    
-    
-    
-    
 }
 
 void GameLayer::initEnemys(){
@@ -166,7 +152,6 @@ void GameLayer::initEnemys(){
         int maxY = MAP_HEIGHT - CENTER_TO_BOTTOM;
         enemy->setPosition(ccp(random_range(minX, maxX), random_range(minY, maxY)));
         enemy->setDesiredPosition(enemy->getPosition());
-//        enemyNode->addChild(enemy);
         enemy->setTag(ENEMY_TAG);
         
         enemy->setAnimateAction(kActionStateNone);
@@ -179,56 +164,17 @@ void GameLayer::initEnemys(){
 #pragma CCJoystickDelegate method
 
 void GameLayer::onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint direction, float power){
-//    CCLOG("angle %f",angle);
-//    CCLOG("point %f %f",direction.x,direction.y);
-//    CCLOG("power %f",power);
     playerSprite->walkWithDirection(direction);
-    /*
-    if (playerSprite->actionType == kActionTypeNone || playerSprite->actionType == kActionTypeWalk) {
-        if (playerSprite->actionType == kActionTypeNone) {
-            playerSprite->setAnimateAction(kActionTypeWalk);
-        }
-        CCPoint point = playerSprite->getPosition();
-        
-        float resultX = point.x + direction.x * 5;
-        float resultY = point.y + direction.y * 5;
-//        CCLOG("x %f y %f",point.x,point.y);
-        if (resultX - CENTER_TO_SIDE >= 0 && resultX+ CENTER_TO_SIDE <= 2048) {
-            point.x = resultX;
-        }
-        if (resultY - CENTER_TO_BOTTOM >= 0 && resultY + CENTER_TO_BOTTOM <= 1534) {
-            point.y = resultY;
-        }
-        playerSprite->setPosition(point);
-//        playerSprite->setZOrder((int)(768 * 2 - point.y));
-        
-        if (direction.x < 0) {
-//            playerSprite->setRotationY(0.0f);
-            playerSprite->setScaleX(1.0f);
-        }
-        if (direction.x >= 0) {
-            playerSprite->setScaleX(-1.0f);
-        }
-
-    }
-     */
-    
-    
 }
 
 void GameLayer::onCCJoyStickActivated(CCNode *sender){
     CCLOG("activated");
-//    testSprite->setZOrder((int)(768 * 2 - testSprite->getPosition().y));
-//    playerSprite->setAnimateAction(kActionTypeWalk);
-//    playerSprite->walkWithDirection(<#cocos2d::CCPoint direction#>)
+
 }
 
 void GameLayer::onCCJoyStickDeactivated(CCNode *sender){
     CCLOG("deactivated");
     playerSprite->stopAllActions();
-//    CCSprite *temp_sprite = CCSprite::createWithSpriteFrameName(initImageName);
-//    CCTexture2D *initT2D = temp_sprite->getTexture();
-//    playerSprite->setTexture(initT2D);
     playerSprite->setAnimateAction(kActionTypeNone);
     
 }
@@ -289,14 +235,11 @@ void GameLayer::handAction(CCObject *pScene){
 //                        this->playEffect(i);
                         audioManager->playEffect(i);
                     }
-
                 }
             }
         }
     }
-//    CCLog("after");
 }
-
 void GameLayer::footAction(CCObject *pScene){
     CCLOG("foot");
     if (playerSprite->actionType != kActionTypeDie && playerSprite->actionType != kActionSuperHit) {
@@ -320,21 +263,12 @@ void GameLayer::footAction(CCObject *pScene){
 //                    this->playEffect(6);
                     audioManager->playEffect(6);
                 }
-                playerSprite->transformBoxes();
-                if (playerSprite->getAttackBox().actual.intersectsRect(testSprite->getHitbox().actual))
-                {
-                    ActionState actionState;
-                    actionState = kActionStateDie;
-                    testSprite->setAnimateAction(actionState);
-                    //                    this->playEffect(6);
-                    audioManager->playEffect(6);
-                }
-                playerSprite->transformBoxes();
             }
         }
     }
-
 }
+
+                    
 //敌人AI
 void GameLayer::updateEnemys(float dt){
 //    CCLog("before");
@@ -412,12 +346,9 @@ void GameLayer::updateEnemys(float dt){
                     }
                 }
             }
-            
         }
     }
-//    CCLog("after");
 }
-
 void GameLayer::updatePositions(float dt){
     playerSprite->setPosition(playerSprite->getDesiredPosition());
     CCObject *pObject = NULL;
@@ -425,17 +356,6 @@ void GameLayer::updatePositions(float dt){
     CCARRAY_FOREACH(_enemys, pObject){
         enemy = (EnemySprite *)pObject;
         enemy->setPosition(enemy->getDesiredPosition());
-        
-        
     }
 }
-
-
-
-
-
-
-
-
-
 

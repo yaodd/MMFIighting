@@ -87,6 +87,7 @@ void UiLayer::toggleWithTheMusic(CCObject* pObject){
     if(musicButton->selectedItem() == musicOpen){
         CCLog("开启");
         audioManager->effectIsOn = true;
+        audioManager->resumeMusic();
     }else{
         CCLog("关闭");
         audioManager->effectIsOn = false;
@@ -111,6 +112,7 @@ void UiLayer::popUpTheMenuLayer(CCObject* pObject){
         pauseLayer->addChild(layerBgSprite);
         resumeMenuItem = CCMenuItemImage::create(resumeNormal_char, resumeSelected_char, this, menu_selector(UiLayer::resumeGame));
         newgameMenuItem = CCMenuItemImage::create(newgameNormal_char, newgameSelected_char, this, menu_selector(UiLayer::exitGame));
+        newgameMenuItem->retain();
         //pauseMenu
         resumeMenuItem->setPosition(ccp(400,400+resumeMenuItem->getContentSize().height/2));
         newgameMenuItem->setPosition(ccp(400,400-newgameMenuItem->getContentSize().height/2));
