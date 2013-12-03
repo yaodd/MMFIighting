@@ -12,6 +12,7 @@
 #include <cocos2d.h>
 #include "Defines.h"
 
+
 enum ActionState{
     kActionStateNone,
     kActionStateDie,
@@ -53,7 +54,6 @@ public:
     CC_SYNTHESIZE(float, _nextDecisionTime, NextDecisionTime);
     CC_SYNTHESIZE(CCPoint, _desiredPosition, DesiredPosition);
     CC_SYNTHESIZE(CCPoint, _velocity, Velocity);
-    CC_SYNTHESIZE(float, _walkSpeed, WalkSpeed);
     
     BoundingBox createBoundingBoxWithOrigin(CCPoint origin, CCSize size);
     void transformBoxes();
@@ -63,6 +63,12 @@ public:
     void setAnimateAction(ActionState actionState);
     void update(float dt);
     void walkWithDirection(CCPoint direction);
+    //属性值
+    CC_SYNTHESIZE(int, _healthPoint, HealthPoint);      //HP
+    CC_SYNTHESIZE(int, _attack, Attack);                //攻击力
+    CC_SYNTHESIZE(int, _defend, Defend);                //防御力
+    CC_SYNTHESIZE(int, _activity, Activity);            //敏捷
+    CC_SYNTHESIZE(float, _walkSpeed, WalkSpeed);        //速度
     
 };
 

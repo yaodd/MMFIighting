@@ -7,9 +7,8 @@
 //
 
 #include "GameScene.h"
-#include "GameLayer.h"
-#include "UiLayer.h"
 GameScene::GameScene(){
+//    this->init();
 }
 GameScene::~GameScene(){
     
@@ -20,13 +19,19 @@ bool GameScene::init(){
     do {
         audioManager = AudioManager::sharedManager();
         audioManager->playGameMusic();
-        GameLayer *gameLayer = GameLayer::create();
+        
+        uiLayer = UiLayer::create();
+        gameLayer = GameLayer::create();
+        gameLayer->delegate = this;
         this->addChild(gameLayer);
-        UiLayer *uiLayer = UiLayer::create();
+        
         this->addChild(uiLayer);
-
+        
         
         pRet = true;
     } while (0);
     return pRet;
+}
+void GameScene::updateUiLayer(float hurt){
+    uiLayer->updateHp(hurt);
 }

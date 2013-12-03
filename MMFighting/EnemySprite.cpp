@@ -8,6 +8,13 @@
 
 #include "EnemySprite.h"
 
+#define HEALTH_POINT_DEFAULT       10
+#define ATTACK_DEFAULT             30
+#define DEFEND_DEFAULT             10
+#define ACTIVITY_DEFAULT           10
+#define WALKSPEED_DEFAULT          100
+
+
 const char dieImageName[20] = "e_die";
 const char walkImageName[20] = "e_walk";
 const char hit1ImageName[20] = "e_hit1_";
@@ -64,7 +71,12 @@ void EnemySprite::myInit(){
 
     _nextDecisionTime = 0;
     
-    this->setWalkSpeed(100.0);
+    this->setWalkSpeed(WALKSPEED_DEFAULT);
+    _walkSpeed = WALKSPEED_DEFAULT;
+    _healthPoint = HEALTH_POINT_DEFAULT;
+    _defend = DEFEND_DEFAULT;
+    _attack = ATTACK_DEFAULT;
+    _activity = ACTIVITY_DEFAULT;
     
 }
 

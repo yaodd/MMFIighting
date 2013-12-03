@@ -45,7 +45,7 @@ bool UiLayer::init(){
 //       hp->setPosition(0,0);
         this->addChild(hp,1000);
         CCLog("hp%f %f ",hp->getPosition().x,hp->getPosition().y);
-        ((HaemalStrand*)hp)->updateHaemalStrand(100.0f);
+//        ((HaemalStrand*)hp)->updateHaemalStrand(100.0f);
         CCLog("start anchor %f %f",hp->getAnchorPoint().x,hp->getPosition().x);
         
         this->initMenu();
@@ -79,7 +79,7 @@ void UiLayer::initMenu(){
 }
 
 void UiLayer::updateHp(float value){
-    
+    ((HaemalStrand *)hp)->updateHaemalStrand(value);
 }
 
 void UiLayer::toggleWithTheMusic(CCObject* pObject){

@@ -14,10 +14,18 @@
 #include "PlayerSprite.h"
 #include "EnemySprite.h"
 #include "AudioManager.h"
+#include "UiLayer.h"
+//#include "GameScene.h"
 
 
 
 using namespace cocos2d;
+
+class GameLayerDelegate{
+public:
+//    virtual ~ GameLayerDelegate(){};
+    virtual void updateUiLayer(float hurt) = 0;
+};
 
 class GameLayer : public CCLayer, public CCJoyStickDelegate
 {
@@ -26,6 +34,8 @@ public:
     ~GameLayer();
     
     AudioManager *audioManager;
+    
+    GameLayerDelegate *delegate;
     
     virtual bool init();
     CREATE_FUNC(GameLayer);
@@ -59,6 +69,8 @@ public:
     
     void playEffect(int i);
     
+    int getHurtWithSprite(PlayerSprite *attackSprite, EnemySprite *beHitSprite);
+    int getHurtWithSprite(EnemySprite *attackSprite, PlayerSprite *beHitSprite);
     
     
     

@@ -13,8 +13,12 @@
 #include <cocos2d.h>
 #include "CCJoystick.h"
 #include "AudioManager.h"
+#include "GameLayer.h"
+#include "UiLayer.h"
+//#include "GameScene.h"
+
 using namespace cocos2d;
-class GameScene : public CCScene
+class GameScene : public CCScene,GameLayerDelegate
 {
 public:
     GameScene(void);
@@ -22,8 +26,9 @@ public:
     
     virtual bool init();
     CREATE_FUNC(GameScene);
-    
+    virtual void updateUiLayer(float hurt);
     AudioManager *audioManager;
-    
+    GameLayer *gameLayer;
+    UiLayer *uiLayer;
 };
 #endif /* defined(__MMFighting__GameScene__) */

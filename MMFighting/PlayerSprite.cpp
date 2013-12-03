@@ -8,6 +8,12 @@
 
 #include "PlayerSprite.h"
 
+#define HEALTH_POINT_DEFAULT       123
+#define ATTACK_DEFAULT             20
+#define DEFEND_DEFAULT             20
+#define ACTIVITY_DEFAULT           20
+#define WALKSPEED_DEFAULT          150
+
 const char walkImageName[20] = "walk";
 const char dieImageName[20] = "die";
 const char initImageName[20] = "initial";
@@ -78,8 +84,11 @@ void PlayerSprite::myInit()
                                                       CCSizeMake(CENTER_TO_SIDE * 2, CENTER_TO_BOTTOM * 2)));
     this->setAttackBox(this->createBoundingBoxWithOrigin(ccp(CENTER_TO_SIDE, -10), CCSizeMake(20, 20)));
     beingHitCount = 0;
-    this->setWalkSpeed(150.0);
-    
+    _walkSpeed = WALKSPEED_DEFAULT;
+    _healthPoint = HEALTH_POINT_DEFAULT;
+    _defend = DEFEND_DEFAULT;
+    _attack = ATTACK_DEFAULT;
+    _activity = ACTIVITY_DEFAULT;
 }
 
 CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt)

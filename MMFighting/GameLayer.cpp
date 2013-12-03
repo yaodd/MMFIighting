@@ -10,6 +10,7 @@
 #include "CCAnimation.h"
 #include "Defines.h"
 #include "SimpleAudioEngine.h"
+#include "GameScene.h"
 
 using namespace cocos2d;
 using namespace CocosDenshion;
@@ -55,7 +56,7 @@ GameLayer::~GameLayer(){
 bool GameLayer::init(){
     bool pRet = false;
     do {
-        
+                
         winSize = CCDirector::sharedDirector()->getWinSize();
         audioManager = AudioManager::sharedManager();
         this->initEffects();
@@ -232,8 +233,10 @@ void GameLayer::handAction(CCObject *pScene){
                         }
                         //                              CCLog("action---------------------------");
                         testSprite->setAnimateAction(actionState);
-//                        this->playEffect(i);
+                        int hurt = this->getHurtWithSprite(playerSprite, testSprite);
+                        testSprite->setHealthPoint(testSprite->getHealthPoint() - hurt);
                         audioManager->playEffect(i);
+                        CCLog("hurt %d",hurt);
                     }
                 }
             }
@@ -262,6 +265,7 @@ void GameLayer::footAction(CCObject *pScene){
                     testSprite->setAnimateAction(actionState);
 //                    this->playEffect(6);
                     audioManager->playEffect(6);
+                    
                 }
             }
         }
@@ -320,9 +324,11 @@ void GameLayer::updateEnemys(float dt){
                                     }
 //                                    playerSprite->retain();
                                     playerSprite->setAnimateAction(actionType);
-//                                    this->playEffect(i);
+                                    int hurt = this->getHurtWithSprite(enemy, playerSprite);
+                                    playerSprite->setHealthPoint(playerSprite->getHealthPoint() - hurt);
+                                    this->delegate->updateUiLayer(playerSprite->getHealthPoint());
                                     audioManager->playEffect(i);
-                                    CCLOG("finished");
+                                    CCLOG("finished hurt %d",hurt);
                                 }
                             }
                         }
@@ -358,4 +364,23 @@ void GameLayer::updatePositions(float dt){
         enemy->setPosition(enemy->getDesiredPosition());
     }
 }
+
+int GameLayer::getHurtWithSprite(PlayerSprite *attackSprite, EnemySprite *beHitSprite){
+    int hurt = 0;
+    
+    //普通伤害值 = （攻击方->攻击力  - 防御方防御力）*（1+(攻击方敏捷值-防御方敏捷值)/攻击方值）
+    hurt = (attackSprite->getAttack() - beHitSprite->getDefend()) * (1 + (attackSprite->getActivity() - beHitSprite->getActivity()) / attackSprite->getAttack());
+    
+    return hurt;
+}
+int GameLayer::getHurtWithSprite(EnemySprite *attackSprite, PlayerSprite *beHitSprite){
+    int hurt = 0;
+    
+    //普通伤害值 = （攻击方->攻击力  - 防御方防御力）*（1+(攻击方敏捷值-防御方敏捷值)/攻击方值）
+    hurt = (attackSprite->getAttack() - beHitSprite->getDefend()) * (1 + (attackSprite->getActivity() - beHitSprite->getActivity()) / attackSprite->getAttack());
+    
+    return hurt;
+}
+
+
 
