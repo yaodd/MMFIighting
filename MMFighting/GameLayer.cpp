@@ -11,6 +11,7 @@
 #include "Defines.h"
 #include "SimpleAudioEngine.h"
 #include "GameScene.h"
+#include "GameOverScene.h"
 
 using namespace cocos2d;
 using namespace CocosDenshion;
@@ -25,6 +26,9 @@ using namespace CocosDenshion;
 
 #define PLAYER_TAG  111111
 #define ENEMY_TAG   222222
+#define SCORE_SMALL   5
+#define SCORE_MIDDLE  8
+#define SCORE_LARGE   10
 
 const char ballImageName[20] = "Ball_hl.png";
 const char dockImageName[20] = "Joystick.png";
@@ -56,6 +60,7 @@ GameLayer::~GameLayer(){
 bool GameLayer::init(){
     bool pRet = false;
     do {
+        score = 0;
                 
         winSize = CCDirector::sharedDirector()->getWinSize();
         audioManager = AudioManager::sharedManager();
@@ -77,6 +82,7 @@ bool GameLayer::init(){
         playerSprite->setPosition(ccp(300, 300));
         playerSprite->setDesiredPosition(playerSprite->getPosition());
         playerSprite->setTag(PLAYER_TAG);
+        playerSprite->delegate = this;
         _actors->addChild(playerSprite);
         playerSprite->setAnimateAction(kActionTypeNone);
         
@@ -140,7 +146,7 @@ void GameLayer::update(float dt){
 }
 
 void GameLayer::initEnemys(){
-    int enemyCount = 5;
+    int enemyCount = 2;
     this->setEnemys(CCArray::createWithCapacity(enemyCount));
     
     for (int i = 0; i < enemyCount; i ++) {
@@ -222,21 +228,29 @@ void GameLayer::handAction(CCObject *pScene){
                         if (playerSprite->actionType == kActionTypeHit_1 || playerSprite->actionType == kActionTypeHit_3) {
                             actionState = kActionStateBeingHit_1;
                             i = 1;
+                            score += SCORE_SMALL;
                         }
                         if (playerSprite->actionType == kActionTypeHit_2) {
                             actionState = kActionStateBeingHit_2;
                             i = 2;
+                            score += SCORE_SMALL;
                         }
                         if (playerSprite->actionType == kActionTypeHit_4) {
                             actionState = kActionStateDie;
                             i = 3;
+                            score += SCORE_MIDDLE;
                         }
                         //                              CCLog("action---------------------------");
-                        testSprite->setAnimateAction(actionState);
                         int hurt = this->getHurtWithSprite(playerSprite, testSprite);
                         testSprite->setHealthPoint(testSprite->getHealthPoint() - hurt);
+                        if (testSprite->getHealthPoint() <= 0) {
+                            actionState = kActionStateDie;
+                        }
+                        testSprite->setAnimateAction(actionState);
+                        
                         audioManager->playEffect(i);
                         CCLog("hurt %d",hurt);
+                        this->delegate->updateScore(score);
                     }
                 }
             }
@@ -263,6 +277,8 @@ void GameLayer::footAction(CCObject *pScene){
                     ActionState actionState;
                     actionState = kActionStateDie;
                     testSprite->setAnimateAction(actionState);
+                    score += SCORE_LARGE;
+                    this->delegate->updateScore(score);
 //                    this->playEffect(6);
                     audioManager->playEffect(6);
                     
@@ -294,19 +310,19 @@ void GameLayer::updateEnemys(float dt){
                 //3
                 if (distanceSQ >=10 * 10 && distanceSQ <= 50 * 50) {
                     enemy->setNextDecisionTime(CURTIME + frandom_range(0.1, 0.5) * 1000);
-                    randomChoice = random_range(0, 1);
+                    randomChoice = random_range(0, 5);
                     if (0 == randomChoice) {
                         if (playerSprite->getPosition().x > enemy->getPosition().x) {
-                            enemy->setScaleX(-1.0);
+                            enemy->setScaleX(-SCALE_DEFAULT);
                         }else{
-                            enemy->setScaleX(1.0);
+                            enemy->setScaleX(SCALE_DEFAULT);
                         }
                         //4
                         enemy->setNextDecisionTime(enemy->getNextDecisionTime() + frandom_range(0.1,0.5) * 2000);
 //                        CCLog("before");
                         enemy->setAnimateAction(kActionStateHit1);
 //                        CCLog("after");
-                        if (enemy->actionState == kActionStateHit1 && (playerSprite->actionType != kActionTypeHit_1 && playerSprite->actionType != kActionTypeHit_2 && playerSprite->actionType != kActionTypeHit_3 && playerSprite->actionType != kActionTypeHit_4 && playerSprite->actionType != kActionSuperHit)) {
+                        if (enemy->actionState == kActionStateHit1 && (playerSprite->actionType != kActionTypeHit_1 && playerSprite->actionType != kActionTypeHit_2 && playerSprite->actionType != kActionTypeHit_3 && playerSprite->actionType != kActionTypeHit_4 && playerSprite->actionType != kActionSuperHit && playerSprite->actionType != kActionTypeDie)) {
 //                            enemy->setAnimateAction(kActionStateHit1);
                             if (fabsf(playerSprite->getPosition().y - enemy->getPosition().y) < 30) {
                                 if (enemy->getAttackBox().actual.intersectsRect(playerSprite->getHitbox().actual)) {
@@ -322,18 +338,31 @@ void GameLayer::updateEnemys(float dt){
                                         actionType = kActionTypeBeingHit_2;
                                         i = 2;
                                     }
+                                    
 //                                    playerSprite->retain();
-                                    playerSprite->setAnimateAction(actionType);
                                     int hurt = this->getHurtWithSprite(enemy, playerSprite);
                                     playerSprite->setHealthPoint(playerSprite->getHealthPoint() - hurt);
-                                    this->delegate->updateUiLayer(playerSprite->getHealthPoint());
+                                    this->delegate->updateHp(playerSprite->getHealthPoint());
+
+                                    if (playerSprite->getHealthPoint() <= 0) {
+                                        actionType = kActionTypeDie;
+                                        playerSprite->setLifeNumber(playerSprite->getLifeNumber() - 1);
+                                        this->delegate->decreaseHeart();
+                                    }
+                                    playerSprite->setAnimateAction(actionType);
+                                    
+                                    
                                     audioManager->playEffect(i);
                                     CCLOG("finished hurt %d",hurt);
                                 }
                             }
                         }
                     }
-                    else{
+                    else if (1 == randomChoice){
+                        CCPoint moveDirection = ccpNormalize(ccpSub(playerSprite->getPosition(), enemy->getPosition()));
+                        //                        enemy->setPosition(moveDirection);
+                        enemy->walkWithDirection(moveDirection);
+                    }else{
                         enemy->setAnimateAction(kActionStateNone);
                     }
                 } else if (distanceSQ <= winSize.width * winSize.width){
@@ -380,6 +409,15 @@ int GameLayer::getHurtWithSprite(EnemySprite *attackSprite, PlayerSprite *beHitS
     hurt = (attackSprite->getAttack() - beHitSprite->getDefend()) * (1 + (attackSprite->getActivity() - beHitSprite->getActivity()) / attackSprite->getAttack());
     
     return hurt;
+}
+#pragma PlayerSpriteDelegate mark
+void GameLayer::gameOver(){
+    GameOverScene *gameOverScene = GameOverScene::create();
+    CCDirector::sharedDirector()->replaceScene(gameOverScene);
+}
+void GameLayer::updatePlayHP(float value)
+{
+    this->delegate->updateHp(value);
 }
 
 

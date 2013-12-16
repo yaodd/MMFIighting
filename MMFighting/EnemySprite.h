@@ -41,6 +41,7 @@ private:
     CCAnimate *getAnimate(int imageNum,const char *imageName,float dt);
     
     void runFinishedCallBack();
+    void dieFinishHandler();
 public:
     static EnemySprite *enemySprite(int type);
     EnemySprite();
@@ -63,6 +64,7 @@ public:
     void setAnimateAction(ActionState actionState);
     void update(float dt);
     void walkWithDirection(CCPoint direction);
+    void updatePosition(CCPoint resultPoint);
     //属性值
     CC_SYNTHESIZE(int, _healthPoint, HealthPoint);      //HP
     CC_SYNTHESIZE(int, _attack, Attack);                //攻击力

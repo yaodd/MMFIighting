@@ -26,7 +26,9 @@ public:
     
     virtual bool init();
     CREATE_FUNC(GameScene);
-    virtual void updateUiLayer(float hurt);
+    virtual void updateHp(float hurt);
+    virtual void updateScore(int score);
+    virtual void decreaseHeart();
     AudioManager *audioManager;
     GameLayer *gameLayer;
     UiLayer *uiLayer;

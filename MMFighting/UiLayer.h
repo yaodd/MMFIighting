@@ -42,6 +42,14 @@ public:
     void initWithParticle();
     void exitGame(CCObject* pObject);
     void resumeGame(CCObject* pObject);
+    void updateScore(int scroe);
+    
+    CCLabelAtlas *gameScoreLabel;
+    CC_SYNTHESIZE_RETAIN(CCArray*, _heartArray, HeartArray);
+    void initHeart();
+    void decreaseHeart();
+    
+    void initPauseLayer();
 };
 
 #endif /* defined(__mmFight__UiLayer__) */

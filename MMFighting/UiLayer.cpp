@@ -7,6 +7,9 @@
 //
 
 #include "UiLayer.h"
+#include <string.h>
+#define PLAY_HEART_NUMBER_DEFAULT   3
+using namespace std;
 
 const char pauseNormal_char[30] = {"stop1.png"};
 const char pauseSelected_char[30] = {"stop2.png"};
@@ -18,6 +21,10 @@ const char newgameNormal_char[30] = {"newgame1.png"};
 const char newgameSelected_char[30] = {"newgame2.png"};
 const char gameMenuPlistName[30] = "GameMenu.plist";
 const char pauseLayerImageName[30] = "window.png";
+const char heartImageName[20] = "heart.png";
+
+const string digStr = ":123456789";
+string intToStr(int a);
 UiLayer::UiLayer(void){
     
 }
@@ -49,11 +56,43 @@ bool UiLayer::init(){
         CCLog("start anchor %f %f",hp->getAnchorPoint().x,hp->getPosition().x);
         
         this->initMenu();
+        const char *arr = intToStr(0).c_str();
+        gameScoreLabel = CCLabelAtlas::create(arr, "digit.png", 112, 200, '1');
+        gameScoreLabel->setPosition(ccp(900, 1320));
+        _heartArray = NULL;
+        this->addChild(gameScoreLabel);
+        this->initHeart();
+        
+        this->initPauseLayer();
         ret = true;
     }while(false);
     return ret;
 }
-
+string intToStr(int a)
+{
+    string str = "";
+    do {
+        int b = a % 10;
+        str += digStr[b];
+        a /= 10;
+        
+    } while (a != 0);
+    for (int i = 0 ,k = str.length() - 1; i < str.length() / 2; i ++, k --) {
+        char temp = str[i];
+        str[i] = str[k];
+        str[k] = temp;
+    }
+    return str;
+}
+void UiLayer::initHeart(){
+    this->setHeartArray(CCArray::createWithCapacity(PLAY_HEART_NUMBER_DEFAULT));
+    for (int i = 0; i < PLAY_HEART_NUMBER_DEFAULT; i ++) {
+        CCSprite *heartSprite = CCSprite::createWithSpriteFrameName(heartImageName);
+        heartSprite->setPosition(ccp(100 + 170 * i, 1300));
+        this->addChild(heartSprite);
+        _heartArray->addObject(heartSprite);
+    }
+}
 void UiLayer::initMenu(){
     CCSize size = CCDirector::sharedDirector()->getWinSize();
     CCSprite *tempnormalSprite = CCSprite::createWithSpriteFrameName(pauseNormal_char);
@@ -76,12 +115,48 @@ void UiLayer::initMenu(){
     menu->setPosition(CCPointZero);
     this->addChild(menu);
     initWithParticle();
+    
+    
+}
+void UiLayer::initPauseLayer()
+{
+    CCSize size = CCDirector::sharedDirector()->getWinSize();
+
+    pauseLayer = CCLayerColor::create(ccc4(123, 123, 123, 0), 800, 800);
+    
+    pauseLayer->setPosition(ccp(size.width/2-400,size.height/2-400));
+    
+    pauseLayer->retain();
+    CCSprite *layerBgSprite = CCSprite::createWithSpriteFrameName(pauseLayerImageName);
+    layerBgSprite->setPosition(ccp(800 / 2, 800 / 2));
+    pauseLayer->retain();
+    pauseLayer->addChild(layerBgSprite);
+    resumeMenuItem = CCMenuItemImage::create(resumeNormal_char, resumeSelected_char, this, menu_selector(UiLayer::resumeGame));
+    newgameMenuItem = CCMenuItemImage::create(newgameNormal_char, newgameSelected_char, this, menu_selector(UiLayer::exitGame));
+    newgameMenuItem->retain();
+    //pauseMenu
+    resumeMenuItem->setPosition(ccp(400,400+resumeMenuItem->getContentSize().height/2));
+    newgameMenuItem->setPosition(ccp(400,400-newgameMenuItem->getContentSize().height/2));
+    pauseMenu = CCMenu::create(resumeMenuItem,newgameMenuItem,NULL);
+    pauseMenu->setPosition(CCPointZero);
+    pauseMenu->retain();
+    pauseLayer->addChild(pauseMenu);
+    pauseLayer->setVisible(false);
+    this->addChild(pauseLayer);
 }
 
 void UiLayer::updateHp(float value){
     ((HaemalStrand *)hp)->updateHaemalStrand(value);
 }
-
+void UiLayer::decreaseHeart(){
+    int count = _heartArray->count();
+    if (count > 0) {
+        CCSprite *heart = (CCSprite *)_heartArray->objectAtIndex(count - 1);
+        _heartArray->removeLastObject();
+        heart->removeFromParent();
+    }
+    
+}
 void UiLayer::toggleWithTheMusic(CCObject* pObject){
     
     if(musicButton->selectedItem() == musicOpen){
@@ -99,31 +174,8 @@ void UiLayer::toggleWithTheMusic(CCObject* pObject){
 void UiLayer::popUpTheMenuLayer(CCObject* pObject){
     CCLog("popUpTheLayer");
     CCDirector::sharedDirector()->pause();
-    CCSize size = CCDirector::sharedDirector()->getWinSize();
-    if(pauseLayer == NULL){
-        pauseLayer = CCLayerColor::create(ccc4(123, 123, 123, 0), 800, 800);
-        
-        pauseLayer->setPosition(ccp(size.width/2-400,size.height/2-400));
-        
-        pauseLayer->retain();
-        CCSprite *layerBgSprite = CCSprite::createWithSpriteFrameName(pauseLayerImageName);
-        layerBgSprite->setPosition(ccp(800 / 2, 800 / 2));
-        pauseLayer->retain();
-        pauseLayer->addChild(layerBgSprite);
-        resumeMenuItem = CCMenuItemImage::create(resumeNormal_char, resumeSelected_char, this, menu_selector(UiLayer::resumeGame));
-        newgameMenuItem = CCMenuItemImage::create(newgameNormal_char, newgameSelected_char, this, menu_selector(UiLayer::exitGame));
-        newgameMenuItem->retain();
-        //pauseMenu
-        resumeMenuItem->setPosition(ccp(400,400+resumeMenuItem->getContentSize().height/2));
-        newgameMenuItem->setPosition(ccp(400,400-newgameMenuItem->getContentSize().height/2));
-        pauseMenu = CCMenu::create(resumeMenuItem,newgameMenuItem,NULL);
-        pauseMenu->setPosition(CCPointZero);
-        pauseMenu->retain();
-        pauseLayer->addChild(pauseMenu);
-        this->addChild(pauseLayer);
-    }else{
-        pauseLayer->setPosition(ccp(size.width/2-400,size.height/2-400));
-    }
+    
+    pauseLayer->setVisible(true);
     
 }
 
@@ -134,8 +186,14 @@ void UiLayer::exitGame(CCObject *pObject){
 void UiLayer::resumeGame(CCObject *pObject){
     CCLog("resume game");
     CCSize size = CCDirector::sharedDirector()->getWinSize();
-    pauseLayer->setPosition(ccp(-size.width/2,-size.height/2));
+    pauseLayer->setVisible(false);
     CCDirector::sharedDirector()->resume();
+}
+
+void UiLayer::updateScore(int score)
+{
+    const char *arr = intToStr(score).c_str();
+    gameScoreLabel->setString(arr);
 }
 
 void UiLayer::initWithParticle(){

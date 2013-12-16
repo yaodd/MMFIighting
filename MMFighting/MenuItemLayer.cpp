@@ -8,6 +8,7 @@
 
 #include "MenuItemLayer.h"
 #include "GameScene.h"
+#include "GameHelpScene.h"
 const char continueImageName1[20] = "Continue1.png";
 const char continueImageName2[20] = "Continue2.png";
 const char helpImageName1[20] = "HELP1.png";
@@ -62,7 +63,8 @@ void MenuItemLayer::playAction(CCObject *pScene)
 }
 void MenuItemLayer::helpAction(CCObject *pScene)
 {
-    
+    GameHelpScene *gameHelpScene = GameHelpScene::create();
+    CCDirector::sharedDirector()->replaceScene(gameHelpScene);
 }
 void MenuItemLayer::continueAction(CCObject *pScene)
 {

@@ -20,6 +20,7 @@
 		9C111BE7184311A0001E536A /* UiLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C111BE4184311A0001E536A /* UiLayer.cpp */; };
 		9C111BEA18432054001E536A /* sound1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C111BE818432054001E536A /* sound1.png */; };
 		9C111BEB18432054001E536A /* sound2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C111BE918432054001E536A /* sound2.png */; };
+		9C2BE5EA1863FD0300335192 /* handShank.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C2BE5E91863FD0300335192 /* handShank.png */; };
 		9C51E7BF18438A48003F2130 /* snow.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C51E7BE18438A48003F2130 /* snow.png */; };
 		9C51E7C418438ED8003F2130 /* GameMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C51E7C118438ED8003F2130 /* GameMenu.plist */; };
 		9C51E7C518438ED8003F2130 /* GameMenu.pvr.ccz in Resources */ = {isa = PBXBuildFile; fileRef = 9C51E7C218438ED8003F2130 /* GameMenu.pvr.ccz */; };
@@ -376,6 +377,11 @@
 		9CF57CF91827CCE300344A79 /* hit2_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CF57CF71827CCE300344A79 /* hit2_1.png */; };
 		9CF57CFC1827E1F600344A79 /* hit3_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CF57CFB1827E1F600344A79 /* hit3_1.png */; };
 		9CF57D021827E7FE00344A79 /* EnemySprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF57D001827E7FE00344A79 /* EnemySprite.cpp */; };
+		9CF99CFB18609BAC005F6265 /* GameOverScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF99CF918609BAC005F6265 /* GameOverScene.cpp */; };
+		9CF99CFE18609CE9005F6265 /* GameOverLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CF99CFC18609CE9005F6265 /* GameOverLayer.cpp */; };
+		9CFB67FC1863307F008071EF /* digit.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CFB67FB1863307F008071EF /* digit.png */; };
+		9CFB680018634B8E008071EF /* GameHelpScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFB67FE18634B8E008071EF /* GameHelpScene.cpp */; };
+		9CFB680318634BA2008071EF /* GameHelpLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9CFB680118634BA2008071EF /* GameHelpLayer.cpp */; };
 		9CFE931E182907D800865E45 /* hit4_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CFE9318182907D800865E45 /* hit4_1.png */; };
 		9CFE931F182907D800865E45 /* hit4_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CFE9319182907D800865E45 /* hit4_2.png */; };
 		9CFE9320182907D800865E45 /* hit4_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CFE931A182907D800865E45 /* hit4_3.png */; };
@@ -424,6 +430,7 @@
 		9C111BE5184311A0001E536A /* UiLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UiLayer.h; sourceTree = "<group>"; };
 		9C111BE818432054001E536A /* sound1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound1.png; sourceTree = "<group>"; };
 		9C111BE918432054001E536A /* sound2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound2.png; sourceTree = "<group>"; };
+		9C2BE5E91863FD0300335192 /* handShank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = handShank.png; sourceTree = "<group>"; };
 		9C51E7BE18438A48003F2130 /* snow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow.png; sourceTree = "<group>"; };
 		9C51E7C118438ED8003F2130 /* GameMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = GameMenu.plist; sourceTree = "<group>"; };
 		9C51E7C218438ED8003F2130 /* GameMenu.pvr.ccz */ = {isa = PBXFileReference; lastKnownFileType = file; path = GameMenu.pvr.ccz; sourceTree = "<group>"; };
@@ -1104,6 +1111,15 @@
 		9CF57CFB1827E1F600344A79 /* hit3_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit3_1.png; sourceTree = "<group>"; };
 		9CF57D001827E7FE00344A79 /* EnemySprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EnemySprite.cpp; sourceTree = "<group>"; };
 		9CF57D011827E7FE00344A79 /* EnemySprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnemySprite.h; sourceTree = "<group>"; };
+		9CF99CF918609BAC005F6265 /* GameOverScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameOverScene.cpp; sourceTree = "<group>"; };
+		9CF99CFA18609BAC005F6265 /* GameOverScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverScene.h; sourceTree = "<group>"; };
+		9CF99CFC18609CE9005F6265 /* GameOverLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameOverLayer.cpp; sourceTree = "<group>"; };
+		9CF99CFD18609CE9005F6265 /* GameOverLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverLayer.h; sourceTree = "<group>"; };
+		9CFB67FB1863307F008071EF /* digit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = digit.png; sourceTree = "<group>"; };
+		9CFB67FE18634B8E008071EF /* GameHelpScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameHelpScene.cpp; sourceTree = "<group>"; };
+		9CFB67FF18634B8E008071EF /* GameHelpScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameHelpScene.h; sourceTree = "<group>"; };
+		9CFB680118634BA2008071EF /* GameHelpLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameHelpLayer.cpp; sourceTree = "<group>"; };
+		9CFB680218634BA2008071EF /* GameHelpLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameHelpLayer.h; sourceTree = "<group>"; };
 		9CFE9318182907D800865E45 /* hit4_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit4_1.png; sourceTree = "<group>"; };
 		9CFE9319182907D800865E45 /* hit4_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit4_2.png; sourceTree = "<group>"; };
 		9CFE931A182907D800865E45 /* hit4_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hit4_3.png; sourceTree = "<group>"; };
@@ -1232,6 +1248,7 @@
 		9CF25E0A18169B66006E0404 /* Joystick */ = {
 			isa = PBXGroup;
 			children = (
+				9C2BE5E91863FD0300335192 /* handShank.png */,
 				9C5D11AB1819776E00E2BA30 /* foot1.png */,
 				9C5D11AC1819776E00E2BA30 /* hand2.png */,
 				9C5D11AD1819776E00E2BA30 /* hand1.png */,
@@ -1257,6 +1274,7 @@
 		9CF25E291816B5BA006E0404 /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				9CFB67FB1863307F008071EF /* digit.png */,
 				9C111B681841B381001E536A /* GameHelp */,
 				9CF25E0A18169B66006E0404 /* Joystick */,
 				9CF25E6B1817668C006E0404 /* GameOver */,
@@ -1336,6 +1354,7 @@
 		9CF25E711817672A006E0404 /* GameScene */ = {
 			isa = PBXGroup;
 			children = (
+				9CF99CF818608BDD005F6265 /* GameOver */,
 				9CF263F71816923200AC4B1B /* GameScene.cpp */,
 				9CF263F81816923200AC4B1B /* GameScene.h */,
 				9C51E7C018438ACE003F2130 /* GameLayer */,
@@ -2545,6 +2564,7 @@
 		9CF263E418168D2800AC4B1B /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9CFB67FD18634A82008071EF /* GameHelp */,
 				9C51E7D91843AD90003F2130 /* AudioManager */,
 				9CF25E711817672A006E0404 /* GameScene */,
 				9CF25E701817671B006E0404 /* MenuScene */,
@@ -2562,6 +2582,28 @@
 				9CF263F418168E4E00AC4B1B /* CCJoystick.cpp */,
 			);
 			name = CCJoystick;
+			sourceTree = "<group>";
+		};
+		9CF99CF818608BDD005F6265 /* GameOver */ = {
+			isa = PBXGroup;
+			children = (
+				9CF99CF918609BAC005F6265 /* GameOverScene.cpp */,
+				9CF99CFA18609BAC005F6265 /* GameOverScene.h */,
+				9CF99CFC18609CE9005F6265 /* GameOverLayer.cpp */,
+				9CF99CFD18609CE9005F6265 /* GameOverLayer.h */,
+			);
+			name = GameOver;
+			sourceTree = "<group>";
+		};
+		9CFB67FD18634A82008071EF /* GameHelp */ = {
+			isa = PBXGroup;
+			children = (
+				9CFB67FE18634B8E008071EF /* GameHelpScene.cpp */,
+				9CFB67FF18634B8E008071EF /* GameHelpScene.h */,
+				9CFB680118634BA2008071EF /* GameHelpLayer.cpp */,
+				9CFB680218634BA2008071EF /* GameHelpLayer.h */,
+			);
+			name = GameHelp;
 			sourceTree = "<group>";
 		};
 		9CFE93441829150000865E45 /* Player */ = {
@@ -2677,6 +2719,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0500;
+				TargetAttributes = {
+					9CF2603F18168D2300AC4B1B = {
+						DevelopmentTeam = DPARKE6QM8;
+					};
+				};
 			};
 			buildConfigurationList = 9CF2603B18168D2200AC4B1B /* Build configuration list for PBXProject "MMFighting" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2715,6 +2762,7 @@
 				9CE521621817764B00460CA5 /* kick8.png in Resources */,
 				9C5D11A018196B5400E2BA30 /* walk1.png in Resources */,
 				9CE7D2B418197DEE00363F3B /* die5.png in Resources */,
+				9CFB67FC1863307F008071EF /* digit.png in Resources */,
 				9CF25E5518176604006E0404 /* hp2.png in Resources */,
 				9CE7D2B718197DEE00363F3B /* die7.png in Resources */,
 				9CF25E5B18176622006E0404 /* continue2.png in Resources */,
@@ -2755,6 +2803,7 @@
 				9C5D11AF1819776E00E2BA30 /* foot1.png in Resources */,
 				9CF25E1C18169BC1006E0404 /* Arrow.png in Resources */,
 				9CF57CF91827CCE300344A79 /* hit2_1.png in Resources */,
+				9C2BE5EA1863FD0300335192 /* handShank.png in Resources */,
 				9CFE932A18290F7400865E45 /* beingHit1_1.png in Resources */,
 				9C111B661841B357001E536A /* MainMenu.plist in Resources */,
 				9C5D11A818196B5400E2BA30 /* walk9.png in Resources */,
@@ -2842,6 +2891,7 @@
 				9CF2625318168D2600AC4B1B /* CCTMXObjectGroup.cpp in Sources */,
 				9CF262A818168D2600AC4B1B /* CCLabelTTFLoader.cpp in Sources */,
 				9CF2626418168D2600AC4B1B /* CCTouchHandler.cpp in Sources */,
+				9CFB680018634B8E008071EF /* GameHelpScene.cpp in Sources */,
 				9CF2629918168D2600AC4B1B /* CCBValue.cpp in Sources */,
 				9CF260A118168D2300AC4B1B /* CCAtlasNode.cpp in Sources */,
 				9CF2632B18168D2700AC4B1B /* LocalStorageAndroid.cpp in Sources */,
@@ -2941,11 +2991,13 @@
 				9CF2634A18168D2700AC4B1B /* AtlasAttachmentLoader.cpp in Sources */,
 				9CF261C218168D2500AC4B1B /* CCScriptSupport.cpp in Sources */,
 				9CF262BE18168D2600AC4B1B /* CCNodeLoader.cpp in Sources */,
+				9CF99CFB18609BAC005F6265 /* GameOverScene.cpp in Sources */,
 				9CF2635C18168D2700AC4B1B /* CCSkeletonAnimation.cpp in Sources */,
 				9CF2607918168D2300AC4B1B /* CCAction.cpp in Sources */,
 				9CF2637118168D2700AC4B1B /* Skin.cpp in Sources */,
 				9CF262CB18168D2600AC4B1B /* CCScrollViewLoader.cpp in Sources */,
 				9CF2631E18168D2700AC4B1B /* CCSorting.cpp in Sources */,
+				9CF99CFE18609CE9005F6265 /* GameOverLayer.cpp in Sources */,
 				9CF2628818168D2600AC4B1B /* CCBFileLoader.cpp in Sources */,
 				9CF2639F18168D2800AC4B1B /* chipmunk.c in Sources */,
 				9CF2618818168D2400AC4B1B /* CCDevice.mm in Sources */,
@@ -2964,6 +3016,7 @@
 				9CF260A718168D2300AC4B1B /* CCCamera.cpp in Sources */,
 				9CF2636218168D2700AC4B1B /* Json.cpp in Sources */,
 				9CF2622B18168D2600AC4B1B /* unzip.cpp in Sources */,
+				9CFB680318634BA2008071EF /* GameHelpLayer.cpp in Sources */,
 				9C51E7E21843B094003F2130 /* AudioManager.cpp in Sources */,
 				9CF262FB18168D2700AC4B1B /* CCControlSwitch.cpp in Sources */,
 				9CF262D918168D2600AC4B1B /* CCComController.cpp in Sources */,
@@ -3170,6 +3223,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3188,6 +3243,8 @@
 					"-websockets",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 2;
 				USER_HEADER_SEARCH_PATHS = "\"MMFighting/libs/Chipmunk/include/chipmunk\"";
 				WRAPPER_EXTENSION = app;
 			};
@@ -3197,6 +3254,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MMFighting/Prefix.pch;
@@ -3214,6 +3273,8 @@
 					"-websockets",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 2;
 				USER_HEADER_SEARCH_PATHS = "\"MMFighting/libs/Chipmunk/include/chipmunk\"";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

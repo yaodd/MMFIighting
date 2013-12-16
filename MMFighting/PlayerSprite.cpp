@@ -13,6 +13,7 @@
 #define DEFEND_DEFAULT             20
 #define ACTIVITY_DEFAULT           20
 #define WALKSPEED_DEFAULT          150
+#define LIFE_NUMBER_DEFAULT        3
 
 const char walkImageName[20] = "walk";
 const char dieImageName[20] = "die";
@@ -50,13 +51,14 @@ PlayerSprite *PlayerSprite::playSprite()
 void PlayerSprite::myInit()
 {
     this->actionType = kActionTypeNone;
+    this->setScale(SCALE_DEFAULT);
     idleAnimate = getAnimate(1, initImageName, 0.1f);
     idleAnimate->retain();
     
     walkAnimate = getAnimate(11, walkImageName, 0.1f);
     walkAnimate->retain();
     
-    dieAnimate = getAnimate(8, dieImageName, 0.2f);
+    dieAnimate = getAnimate(5, dieImageName, 0.2f);
     dieAnimate->retain();
     
     hitAnimate_1 = getAnimate(3, hit1ImageName, 0.1f);
@@ -89,6 +91,7 @@ void PlayerSprite::myInit()
     _defend = DEFEND_DEFAULT;
     _attack = ATTACK_DEFAULT;
     _activity = ACTIVITY_DEFAULT;
+    _lifeNumber = LIFE_NUMBER_DEFAULT;
 }
 
 CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt)
@@ -162,32 +165,54 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
     else if (this->actionType == kActionTypeNone){
         this->runAction(runAnimate);
         _velocity = CCPointZero;
+    } else if (this->actionType == kActionTypeDie){
+        CCPoint point = this->getPosition();
+        if (this->getScaleX() == SCALE_DEFAULT) {
+            point.x = this->getPositionX() + 50;
+        } else{
+            point.x = this->getPositionX() - 50;
+        }
+//        _desiredPosition = point;
+        this->updatePosition(point);
+        CCObject *finished = CCCallFunc::create(this, callfunc_selector(PlayerSprite::runFinishedCallBack));
+        CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
+        this->runAction(CCSequence::create(runArray));
     }
     else{
-        CCLog("bbbbbbb");
         CCObject *finished = CCCallFunc::create(this, callfunc_selector(PlayerSprite::runFinishedCallBack));
 //        finished->retain();
 //        runAnimate->retain();
         CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
 //        runArray->retain();
         this->runAction(CCSequence::create(runArray));
-        CCLog("sssssss");
     }
     
 }
 
 void PlayerSprite::runFinishedCallBack()
 {
-    CCLog("begin");
-    this->actionType = kActionTypeNone;
-//    CCSprite *temp_sprite = CCSprite::createWithSpriteFrameName(initImageName);
-//    CCTexture2D *initT2D = temp_sprite->getTexture();
-//    this->setTexture(initT2D);
-//    this->runAction(idleAnimate);
-    this->stopAllActions();
-    this->setAnimateAction(this->actionType);
-    CCLog("call back");
-    
+    if (this->_healthPoint <= 0) {
+        CCActionInterval *act = CCFadeIn::create(0);
+        CCActionInterval *act2 = CCFadeOut::create(1);
+        CCObject *finished = CCCallFunc::create(this, callfunc_selector(PlayerSprite::dieFinishHandler));
+        
+        CCSequence *pActSeq = CCSequence::create(act,act2,finished,NULL);
+        this->runAction(CCRepeat::create(pActSeq, 4));
+    }else{
+        this->actionType = kActionTypeNone;
+        this->stopAllActions();
+        this->setAnimateAction(this->actionType);
+    }
+}
+void PlayerSprite::dieFinishHandler(){
+    if (this->_lifeNumber < 0) {
+        this->delegate->gameOver();
+    } else{
+        this->setHealthPoint(HEALTH_POINT_DEFAULT);
+        this->delegate->updatePlayHP(this->getHealthPoint());
+        this->_desiredPosition = ccp(300, 300);
+        this->setAnimateAction(kActionTypeNone);
+    }
 }
 
 BoundingBox PlayerSprite::createBoundingBoxWithOrigin(CCPoint origin, CCSize size)
@@ -204,7 +229,7 @@ void PlayerSprite::transformBoxes()
 {
     _hitBox.actual.origin = ccpAdd(this->getPosition(), ccp(_hitBox.original.origin.x, _hitBox.original.origin.y));
     _attackBox.actual.origin = ccpAdd(this->getPosition(), ccp(_attackBox.original.origin.x +
-                                                               (this->getScaleX() == 1 ? (- _attackBox.original.size.width - _hitBox.original.size.width) : 0),
+                                                               (this->getScaleX() == SCALE_DEFAULT ? (- _attackBox.original.size.width - _hitBox.original.size.width) : 0),
                                                                _attackBox.original.origin.y));
 }
 
@@ -215,16 +240,20 @@ void PlayerSprite::setPosition(CCPoint position)
 }
 void PlayerSprite::update(float dt){
     if (actionType == kActionTypeWalk) {
-        CCPoint point = this->getPosition();
         CCPoint resultPoint = ccpAdd(this->getPosition(),ccpMult(_velocity, dt));
-        if (resultPoint.x - CENTER_TO_SIDE >= 0 && resultPoint.x + CENTER_TO_SIDE <= MAP_WIDTH) {
-            point.x = resultPoint.x;
-        }
-        if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y + CENTER_TO_BOTTOM <= MAP_HEIGHT) {
-            point.y = resultPoint.y;
-        }
-        _desiredPosition = point;
+        this->updatePosition(resultPoint);
     }
+}
+void PlayerSprite::updatePosition(CCPoint resultPoint)
+{
+    CCPoint point = this->getPosition();
+    if (resultPoint.x - CENTER_TO_SIDE >= 0 && resultPoint.x + CENTER_TO_SIDE <= MAP_WIDTH) {
+        point.x = resultPoint.x;
+    }
+    if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y + CENTER_TO_BOTTOM <= MAP_HEIGHT) {
+        point.y = resultPoint.y;
+    }
+    _desiredPosition = point;
 }
 void PlayerSprite::walkWithDirection(CCPoint direction){
     if (actionType == kActionTypeNone)
@@ -239,11 +268,11 @@ void PlayerSprite::walkWithDirection(CCPoint direction){
         _velocity = ccp(direction.x * _walkSpeed, direction.y * _walkSpeed);
         if (_velocity.x >= 0)
         {
-            this->setScaleX(-1.0);
+            this->setScaleX(-SCALE_DEFAULT);
         }
         else
         {
-            this->setScaleX(1.0);
+            this->setScaleX(SCALE_DEFAULT);
         }
     }
 }

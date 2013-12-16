@@ -32,6 +32,13 @@ bool GameScene::init(){
     } while (0);
     return pRet;
 }
-void GameScene::updateUiLayer(float hurt){
+#pragma GameLayerDelegate mark
+void GameScene::updateHp(float hurt){
     uiLayer->updateHp(hurt);
+}
+void GameScene::updateScore(int score){
+    uiLayer->updateScore(score);
+}
+void GameScene::decreaseHeart(){
+    uiLayer->decreaseHeart();
 }

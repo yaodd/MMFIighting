@@ -12,6 +12,12 @@
 #include <cocos2d.h>
 #include "Defines.h"
 
+class PlayerSpriteDelegate{
+public:
+    virtual void gameOver(void) = 0;
+    virtual void updatePlayHP(float value) = 0;
+};
+
 enum ActionType {
     kActionTypeWalk,
     kActionTypeDie,
@@ -44,7 +50,7 @@ private:
     CCAnimate *getAnimate(int imageNum,const char *imageName,float dt);
     
     void runFinishedCallBack();
-    
+    void dieFinishHandler();
 public:
     static PlayerSprite *playSprite();
     void myInit();
@@ -62,6 +68,8 @@ public:
     void setAnimateAction(ActionType actionType);
     void update(float dt);
     void walkWithDirection(CCPoint direction);
+    void updatePosition(CCPoint resultPoint);
+
     int beingHitCount;
     //属性值
     CC_SYNTHESIZE(int, _healthPoint, HealthPoint);      //HP
@@ -69,7 +77,9 @@ public:
     CC_SYNTHESIZE(int, _defend, Defend);                //防御力
     CC_SYNTHESIZE(int, _activity, Activity);            //敏捷
     CC_SYNTHESIZE(float, _walkSpeed, WalkSpeed);        //速度
-
+    CC_SYNTHESIZE(int, _lifeNumber, LifeNumber);        //生命数量
+    
+    PlayerSpriteDelegate *delegate;
 };
 
 #endif /* defined(__MMFighting__PlayerSprite__) */

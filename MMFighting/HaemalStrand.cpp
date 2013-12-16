@@ -37,8 +37,8 @@ bool HaemalStrand::init(){
     do {
         previousScaleX = 1.0f;
         stepX = 0.0f;
-        totalHp = 200.0f;
-        nowHp = 200.0f;
+        totalHp = 123.0f;
+        nowHp = totalHp;
         CCSize size = CCDirector::sharedDirector()->getWinSize();
         this->strandBackground = CCSprite::createWithSpriteFrameName(hpbackground_char);
         strandBackground->setPosition(ccp(10+strandBackground->getContentSize().width/2,size.height - strandBackground->getContentSize().height/2-10));

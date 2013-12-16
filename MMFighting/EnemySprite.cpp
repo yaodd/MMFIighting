@@ -8,11 +8,12 @@
 
 #include "EnemySprite.h"
 
-#define HEALTH_POINT_DEFAULT       10
+#define HEALTH_POINT_DEFAULT       100
 #define ATTACK_DEFAULT             30
 #define DEFEND_DEFAULT             10
 #define ACTIVITY_DEFAULT           10
 #define WALKSPEED_DEFAULT          100
+
 
 
 const char dieImageName[20] = "e_die";
@@ -46,6 +47,7 @@ EnemySprite *EnemySprite::enemySprite(int type)
 }
 
 void EnemySprite::myInit(){
+    this->setScale(SCALE_DEFAULT);
     this->actionState = kActionStateNone;
     
     idleAnimate = getAnimate(1, initImageNames[0], 0.1f);
@@ -54,7 +56,7 @@ void EnemySprite::myInit(){
     walkAnimate = getAnimate(11, walkImageName, 0.1f);
     walkAnimate->retain();
     
-    dieAnimate = getAnimate(3, dieImageName, 0.5f);
+    dieAnimate = getAnimate(4, dieImageName, 0.3f);
     dieAnimate->retain();
     
     beingHitAnimate_1 = getAnimate(1, beingHit1ImageName, 0.4f);
@@ -136,33 +138,49 @@ void EnemySprite::setAnimateAction(ActionState actionState)
     else if (this->actionState == kActionStateNone){
         this->runAction(runAnimate);
         _velocity = CCPointZero;
+    } else if (this->actionState == kActionStateDie){
+        CCPoint point = this->getPosition();
+        if (this->getScaleX() == SCALE_DEFAULT) {
+            point.x = this->getPositionX() + 50;
+        } else{
+            point.x = this->getPositionX() - 50;
+        }
+//        _desiredPosition = point;
+        this->updatePosition(point);
+        CCObject *finished = CCCallFunc::create(this, callfunc_selector(EnemySprite::runFinishedCallBack));
+        CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
+        this->runAction(CCSequence::create(runArray));
     }
     else{
-//        CCLOG("1");
         CCObject *finished = CCCallFunc::create(this, callfunc_selector(EnemySprite::runFinishedCallBack));
-//        CCLOG("2");
         CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
-//        runArray->retain();
-//        CCLOG("3");
         this->runAction(CCSequence::create(runArray));
-//        CCLOG("4");
     }
     
 }
 
 void EnemySprite::runFinishedCallBack()
 {
-//    CCLOG("begin");
-    this->actionState = kActionStateNone;
-//    CCSprite *temp_sprite = CCSprite::createWithSpriteFrameName(initImageNames[0]);
-//    CCTexture2D *initT2D = temp_sprite->getTexture();
-//    this->setTexture(initT2D);
-    this->stopAllActions();
-    this->setAnimateAction(this->actionState);
-//    CCLog("call back");
+    if (this->_healthPoint <= 0) {
+//        this->removeFromParent();
+        CCActionInterval *act = CCFadeIn::create(0);
+        CCActionInterval *act2 = CCFadeOut::create(1);
+        CCObject *finished = CCCallFunc::create(this, callfunc_selector(EnemySprite::dieFinishHandler));
+        
+        CCSequence *pActSeq = CCSequence::create(act,act2,finished,NULL);
+        this->runAction(CCRepeat::create(pActSeq, 1));
+    }
+    else{
+        this->actionState = kActionStateNone;
+        this->stopAllActions();
+        this->setAnimateAction(this->actionState);
+    }
     
 }
 
+void EnemySprite::dieFinishHandler(){
+    this->removeFromParent();
+}
 BoundingBox EnemySprite::createBoundingBoxWithOrigin(CCPoint origin, CCSize size)
 {
     BoundingBox boundingBox;
@@ -177,7 +195,7 @@ void EnemySprite::transformBoxes()
 {
     _hitBox.actual.origin = ccpAdd(this->getPosition(), ccp(_hitBox.original.origin.x, _hitBox.original.origin.y));
     _attackBox.actual.origin = ccpAdd(this->getPosition(), ccp(_attackBox.original.origin.x +
-                                                               (this->getScaleX() == 1 ? (- _attackBox.original.size.width - _hitBox.original.size.width) : 0),
+                                                               (this->getScaleX() == SCALE_DEFAULT ? (- _attackBox.original.size.width - _hitBox.original.size.width) : 0),
                                                                _attackBox.original.origin.y));
 }
 
@@ -188,17 +206,23 @@ void EnemySprite::setPosition(CCPoint position)
 }
 void EnemySprite::update(float dt){
     if (actionState == kActionStateWalk) {
-        CCPoint point = this->getPosition();
+        
         CCPoint resultPoint = ccpAdd(this->getPosition(),ccpMult(_velocity, dt));
-        if (resultPoint.x - CENTER_TO_SIDE >= 0 && resultPoint.x + CENTER_TO_SIDE <= MAP_WIDTH) {
-            point.x = resultPoint.x;
-        }
-        if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y + CENTER_TO_BOTTOM <= MAP_HEIGHT) {
-            point.y = resultPoint.y;
-        }
-        _desiredPosition = point;
+        this->updatePosition(resultPoint);
     }
 }
+void EnemySprite::updatePosition(CCPoint resultPoint)
+{
+    CCPoint point = this->getPosition();
+    if (resultPoint.x - CENTER_TO_SIDE >= 0 && resultPoint.x + CENTER_TO_SIDE <= MAP_WIDTH) {
+        point.x = resultPoint.x;
+    }
+    if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y + CENTER_TO_BOTTOM <= MAP_HEIGHT) {
+        point.y = resultPoint.y;
+    }
+    _desiredPosition = point;
+}
+
 void EnemySprite::walkWithDirection(CCPoint direction){
     if (actionState == kActionStateNone)
     {
@@ -212,11 +236,11 @@ void EnemySprite::walkWithDirection(CCPoint direction){
         _velocity = ccp(direction.x * _walkSpeed, direction.y * _walkSpeed);
         if (_velocity.x >= 0)
         {
-            this->setScaleX(-1.0);
+            this->setScaleX(-SCALE_DEFAULT);
         }
         else
         {
-            this->setScaleX(1.0);
+            this->setScaleX(SCALE_DEFAULT);
         }
     }
 }

@@ -18,11 +18,13 @@ typedef struct _BoundingBox{
     CCRect original;
 } BoundingBox;
 
+#define SCALE_DEFAULT               1.5f
+
 #define MAP_WIDTH   2048.0f
 #define MAP_HEIGHT  400.f
 
-#define CENTER_TO_BOTTOM 78.0f
-#define CENTER_TO_SIDE 40.0f
+#define CENTER_TO_BOTTOM (78.0f/* * SCALE_DEFAULT*/)
+#define CENTER_TO_SIDE (60.0f/* * SCALE_DEFAULT*/)
 
 #define CURTIME GetCurTime()
 

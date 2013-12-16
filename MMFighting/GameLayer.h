@@ -24,10 +24,12 @@ using namespace cocos2d;
 class GameLayerDelegate{
 public:
 //    virtual ~ GameLayerDelegate(){};
-    virtual void updateUiLayer(float hurt) = 0;
+    virtual void updateHp(float hurt) = 0;
+    virtual void updateScore(int score) = 0;
+    virtual void decreaseHeart() = 0;
 };
 
-class GameLayer : public CCLayer, public CCJoyStickDelegate
+class GameLayer : public CCLayer, public CCJoyStickDelegate, PlayerSpriteDelegate
 {
 public:
     GameLayer();
@@ -71,6 +73,11 @@ public:
     
     int getHurtWithSprite(PlayerSprite *attackSprite, EnemySprite *beHitSprite);
     int getHurtWithSprite(EnemySprite *attackSprite, PlayerSprite *beHitSprite);
+    
+    int score;
+    
+    virtual void gameOver(void);
+    virtual void updatePlayHP(float value);
     
     
     
