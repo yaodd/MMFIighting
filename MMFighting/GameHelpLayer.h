@@ -12,6 +12,7 @@
 #include <iostream>
 #include <cocos2d.h>
 #include "CCJoystick.h"
+#include "PlayerSprite.h"
 using namespace cocos2d;
 
 class GameHelpLayer : public CCLayer ,CCJoyStickDelegate
@@ -31,9 +32,14 @@ public:
     void handAction(CCScene *pObject);
     void footAction(CCScene *pObject);
     
+    void preAction(CCScene *pObject);
+    void playAction(CCScene *pObject);
+    
     void onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint direction, float power);
     void onCCJoyStickActivated(CCNode* sender);
     void onCCJoyStickDeactivated(CCNode* sender);
+    
+    PlayerSprite *player;
 };
 
 #endif /* defined(__MMFighting__GameHelpLayer__) */

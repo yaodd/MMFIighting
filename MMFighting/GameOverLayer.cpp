@@ -11,8 +11,8 @@
 const char bgImageName[20] = "backgroundOver.png";
 const char enterImageName1[20] = "Enter1.png";
 const char enterImageName2[20] = "Enter2.png";
-const char playImageName1[20] = "PLAY1.png";
-const char playImageName2[20] = "PLAY2.png";
+const char playImageName1[20] = "GamePLAY1.png";
+const char playImageName2[20] = "GamePLAY2.png";
 const char returnImageName1[20] = "Return1.png";
 const char returnImageName2[20] = "Return2.png";
 const char gameoverPlistName[30] = "GameOver.plist";

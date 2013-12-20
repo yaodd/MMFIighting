@@ -22,7 +22,7 @@ using namespace CocosDenshion;
 #define IS_CAN_VISIBLE true
 #define IS_AUTO_HIDE false
 #define HAS_ANIMATION true
-#define HIT_AREA_RADIUS 100
+#define HIT_AREA_RADIUS 200
 
 #define PLAYER_TAG  111111
 #define ENEMY_TAG   222222
@@ -40,7 +40,7 @@ const char handImageNamePre[20] = "hand2.png";
 const char footImageNamePre[20] = "foot2.png";
 const char initImageNames[10][20] = {"e_initial.png","","","","","","","","",""};
 const char initImageName[20] = "initial.png";
-const char actionTPName[20] = "action.pvr.ccz";
+const char actionTPName[30] = "MMFightingAllImage.pvr.ccz";
 const char actionPlistName[20] = "action.plist";
 const char effect1[20] = "effect1.mp3";
 const char effect2[20] = "effect2.mp3";
@@ -65,7 +65,7 @@ bool GameLayer::init(){
         winSize = CCDirector::sharedDirector()->getWinSize();
         audioManager = AudioManager::sharedManager();
         this->initEffects();
-        CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(actionPlistName);
+//        CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(actionPlistName);
         _actors = CCSpriteBatchNode::create(actionTPName);
         _actors->getTexture()->setAliasTexParameters();
         this->addChild(_actors, 1);
@@ -89,7 +89,7 @@ bool GameLayer::init(){
         _enemys = NULL;
         this->initEnemys();
         
-        joyStick = CCJoystick::create( BALL_RADIUS, MOVE_AREA_RADIUS, IS_FOLLOW_TOUCH, IS_CAN_VISIBLE, IS_AUTO_HIDE, HAS_ANIMATION);
+        joyStick = CCJoystick::create( BALL_RADIUS, MOVE_AREA_RADIUS,HIT_AREA_RADIUS, IS_FOLLOW_TOUCH, IS_CAN_VISIBLE, IS_AUTO_HIDE, HAS_ANIMATION);
         //        joyStick->setBallTexture(ballImageName);
         joyStick->setDockTexture(dockImageName);
         joyStick->setStickTexture(stickImageName);
@@ -105,8 +105,9 @@ bool GameLayer::init(){
         CCMenuItemSprite *footButton = CCMenuItemSprite::create(footSpriteNor, footSpritePre, this, menu_selector(GameLayer::footAction));
         
         CCMenu *hitMenu = CCMenu::create(handButton,footButton,NULL);
-        hitMenu->setPosition(ccp(2048 - 300, 300));
-        hitMenu->alignItemsHorizontallyWithPadding(20);
+        hitMenu->setRotation(-40);
+        hitMenu->setPosition(ccp(2048 - 1000, 800));
+        hitMenu->alignItemsHorizontallyWithPadding(30);
         this->addChild(hitMenu,2);
         
         this->scheduleUpdate();
@@ -188,7 +189,7 @@ void GameLayer::onCCJoyStickDeactivated(CCNode *sender){
 //出拳
 void GameLayer::handAction(CCObject *pScene){
 //    CCLOG("before");
-    if (playerSprite->actionType == kActionTypeBeingHit_1 || playerSprite->actionType == kActionTypeBeingHit_2) {
+    if (playerSprite->actionType == kActionTypeBeingHit_1 || playerSprite->actionType == kActionTypeBeingHit_2 || playerSprite->actionType == kActionSuperHit) {
         return;
     }
     if (playerSprite->actionType != kActionTypeHit_4) {

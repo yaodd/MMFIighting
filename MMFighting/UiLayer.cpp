@@ -8,6 +8,7 @@
 
 #include "UiLayer.h"
 #include <string.h>
+#include "GameScene.h"
 #define PLAY_HEART_NUMBER_DEFAULT   3
 using namespace std;
 
@@ -131,8 +132,8 @@ void UiLayer::initPauseLayer()
     layerBgSprite->setPosition(ccp(800 / 2, 800 / 2));
     pauseLayer->retain();
     pauseLayer->addChild(layerBgSprite);
-    resumeMenuItem = CCMenuItemImage::create(resumeNormal_char, resumeSelected_char, this, menu_selector(UiLayer::resumeGame));
-    newgameMenuItem = CCMenuItemImage::create(newgameNormal_char, newgameSelected_char, this, menu_selector(UiLayer::exitGame));
+    resumeMenuItem = CCMenuItemSprite::create(CCSprite::createWithSpriteFrameName(resumeNormal_char),CCSprite::createWithSpriteFrameName(resumeSelected_char), this, menu_selector(UiLayer::resumeGame));
+    newgameMenuItem = CCMenuItemSprite::create(CCSprite::createWithSpriteFrameName(newgameNormal_char), CCSprite::createWithSpriteFrameName(newgameSelected_char), this, menu_selector(UiLayer::exitGame));
     newgameMenuItem->retain();
     //pauseMenu
     resumeMenuItem->setPosition(ccp(400,400+resumeMenuItem->getContentSize().height/2));
@@ -180,6 +181,9 @@ void UiLayer::popUpTheMenuLayer(CCObject* pObject){
 }
 
 void UiLayer::exitGame(CCObject *pObject){
+    CCScene *gameScene = GameScene::create();
+    CCDirector::sharedDirector()->replaceScene(gameScene);
+    CCDirector::sharedDirector()->resume();
     CCLog("exit game");
 }
 

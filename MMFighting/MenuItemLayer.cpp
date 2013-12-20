@@ -13,8 +13,8 @@ const char continueImageName1[20] = "Continue1.png";
 const char continueImageName2[20] = "Continue2.png";
 const char helpImageName1[20] = "HELP1.png";
 const char helpImageName2[20] = "HELP2.png";
-const char playImageName1[20] = "PLAY1.png";
-const char playImageName2[20] = "PLAY2.png";
+const char playImageName1[20] = "MenuPLAY1.png";
+const char playImageName2[20] = "MenuPLAY2.png";
 
 MenuItemLayer::MenuItemLayer()
 {

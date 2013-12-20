@@ -26,10 +26,10 @@ public:
     CCMenuItemImage *musicClosed;
     CCMenu *menu;
     CCMenu *pauseMenu;
-    CCMenuItemImage *resumeMenuItem;
-    CCMenuItemImage *newgameMenuItem;
+    CCMenuItemSprite *resumeMenuItem;
+    CCMenuItemSprite *newgameMenuItem;
     CCLayer *pauseLayer;
-    CCScene *gameScene;//游戏场景弱引用
+//    CCScene *gameScene;//游戏场景弱引用
     //function
     UiLayer(void);
     ~UiLayer(void);

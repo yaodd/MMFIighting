@@ -250,7 +250,8 @@ void PlayerSprite::updatePosition(CCPoint resultPoint)
     if (resultPoint.x - CENTER_TO_SIDE >= 0 && resultPoint.x + CENTER_TO_SIDE <= MAP_WIDTH) {
         point.x = resultPoint.x;
     }
-    if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y + CENTER_TO_BOTTOM <= MAP_HEIGHT) {
+    if (resultPoint.y - CENTER_TO_BOTTOM >= 0 && resultPoint.y - CENTER_TO_BOTTOM
+        <= MAP_HEIGHT) {
         point.y = resultPoint.y;
     }
     _desiredPosition = point;

@@ -9,6 +9,13 @@
 #include "MenuScene.h"
 #include "MenuBGLayer.h"
 #include "MenuItemLayer.h"
+const char allImagePlistName[30] = "MMFightingAllImage.plist";
+const char allImagePngName[30] = "MMFightingAllImage.png";
+const char allImagePvrName[30] = "MMFightingAllImage.pvr.ccz";
+
+const char allImagePlistName2[30] = "MMFightingAllImage2.plist";
+const char allImagePngName2[30] = "MMFightingAllImage2.png";
+const char allImagePvrName2[30] = "MMFightingAllImage2.pvr.ccz";
 
 MenuScene::MenuScene()
 {
@@ -23,6 +30,10 @@ MenuScene::~MenuScene()
 bool MenuScene::init(){
     bool pRet = false;
     do {
+        CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(allImagePlistName, allImagePvrName);
+        CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(allImagePlistName2,allImagePvrName2);
+        CCLOG("load");
+        
         audioManager = AudioManager::sharedManager();
         audioManager->playMenuMusic();
         MenuBGLayer *menuBGLayer = MenuBGLayer::create();

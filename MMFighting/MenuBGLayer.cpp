@@ -10,7 +10,7 @@
 
 const char MainMenuTPName[20] = "MainMenu.pvr.ccz";
 const char MainMenuPlistName[20] = "MainMenu.plist";
-const char bgImageName[20] = "background.png";
+const char menuBgImageName[20] = "background.png";
 const char animationImageName[20] = "IMG00";
 const char gameNameImageName[20] = "GameName.png";
 
@@ -28,9 +28,9 @@ bool MenuBGLayer::init(){
     bool pRet = false;
     do {
         winSize = CCDirector::sharedDirector()->getWinSize();
-        CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(MainMenuPlistName);
+       
         
-        CCSprite *background = CCSprite::createWithSpriteFrameName(bgImageName);
+        CCSprite *background = CCSprite::createWithSpriteFrameName(menuBgImageName);
         background->setPosition(ccp(winSize.width / 2, winSize.height / 2));
         this->addChild(background,0);
         

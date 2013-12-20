@@ -8,10 +8,10 @@
 
 
 #include "CCJoystick.h"
-CCJoystick* CCJoystick::create(int ballradius, int movearearadius, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation)
+CCJoystick* CCJoystick::create(int ballradius, int movearearadius, int hitAreaRaduis, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation)
 {
     CCJoystick *pRet = new CCJoystick();
-    if(pRet && pRet->init(ballradius, movearearadius, isfollowtouch, iscanvisible, isautohide, hasanimation))
+    if(pRet && pRet->init(ballradius, movearearadius, hitAreaRaduis, isfollowtouch, iscanvisible, isautohide, hasanimation))
     {
         pRet->autorelease();
         return pRet;
@@ -19,7 +19,7 @@ CCJoystick* CCJoystick::create(int ballradius, int movearearadius, bool isfollow
     CC_SAFE_DELETE(pRet);
     return NULL;
 }
-bool CCJoystick::init(int ballradius, int movearearadius, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation)
+bool CCJoystick::init(int ballradius, int movearearadius, int hitAreaRadius, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation)
 {
     if (CCLayer::init())
     {
@@ -29,12 +29,12 @@ bool CCJoystick::init(int ballradius, int movearearadius, bool isfollowtouch, bo
         isCanVisible=iscanvisible;
         isAutoHide=isautohide;
         hasAnimation=hasanimation;
-        
+        hitAreaRadius = hitAreaRadius;
         power=0;
         angle=0;
         
         CCSize size = CCDirector::sharedDirector()->getWinSize();
-        setHitAreaWithRect(CCRect(0, 0, size.width/4, size.height/4));
+        setHitAreaWithRect(CCRect(0, 0, hitAreaRadius * 2.0, hitAreaRadius * 2.0));
         
         ball = CCSprite::create();
         stick = CCSprite::create();

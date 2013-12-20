@@ -20,8 +20,8 @@ public:
 };
 class CCJoystick :public CCLayer {
 public:
-    static CCJoystick* create(int ballradius, int movearearadius, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation);
-    bool init(int ballradius, int movearearadius, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation);
+    static CCJoystick* create(int ballradius, int movearearadius, int hitAreaRadius, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation);
+    bool init(int ballradius, int movearearadius, int hitAreaRadius, bool isfollowtouch, bool iscanvisible, bool isautohide, bool hasanimation);
     void setDelegate(const CCJoyStickDelegate *pDelegate) { delegate = const_cast<CCJoyStickDelegate*>(pDelegate);}
     void setBallTexture(const char* imageName);
     void setStickTexture(const char* imageName);
@@ -40,6 +40,7 @@ private:
     bool isAutoHide;
     CCRect activeRect;
     int activeRadius;
+    int hitAreaRadius;
     CCPoint currentPoint;
     bool isTouched;
     bool hasAnimation;
