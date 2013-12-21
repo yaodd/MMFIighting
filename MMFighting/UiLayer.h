@@ -28,6 +28,7 @@ public:
     CCMenu *pauseMenu;
     CCMenuItemSprite *resumeMenuItem;
     CCMenuItemSprite *newgameMenuItem;
+    CCMenuItemSprite *backMenuItem;
     CCLayer *pauseLayer;
 //    CCScene *gameScene;//游戏场景弱引用
     //function
@@ -42,6 +43,7 @@ public:
     void initWithParticle();
     void exitGame(CCObject* pObject);
     void resumeGame(CCObject* pObject);
+    void backGame(CCObject *pObject);
     void updateScore(int scroe);
     
     CCLabelAtlas *gameScoreLabel;

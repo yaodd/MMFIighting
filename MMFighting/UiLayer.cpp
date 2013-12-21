@@ -9,6 +9,7 @@
 #include "UiLayer.h"
 #include <string.h>
 #include "GameScene.h"
+#include "MenuScene.h"
 #define PLAY_HEART_NUMBER_DEFAULT   3
 using namespace std;
 
@@ -20,6 +21,8 @@ const char resumeNormal_char[30] = {"continue1.png"};
 const char resumeSelected_char[30] = {"continue2.png"};
 const char newgameNormal_char[30] = {"newgame1.png"};
 const char newgameSelected_char[30] = {"newgame2.png"};
+const char backNormal_char[30] = {"back1.png"};
+const char backSelected_char[30] = {"back2.png"};
 const char gameMenuPlistName[30] = "GameMenu.plist";
 const char pauseLayerImageName[30] = "window.png";
 const char heartImageName[20] = "heart.png";
@@ -127,20 +130,20 @@ void UiLayer::initPauseLayer()
     
     pauseLayer->setPosition(ccp(size.width/2-400,size.height/2-400));
     
-    pauseLayer->retain();
     CCSprite *layerBgSprite = CCSprite::createWithSpriteFrameName(pauseLayerImageName);
     layerBgSprite->setPosition(ccp(800 / 2, 800 / 2));
     pauseLayer->retain();
     pauseLayer->addChild(layerBgSprite);
     resumeMenuItem = CCMenuItemSprite::create(CCSprite::createWithSpriteFrameName(resumeNormal_char),CCSprite::createWithSpriteFrameName(resumeSelected_char), this, menu_selector(UiLayer::resumeGame));
     newgameMenuItem = CCMenuItemSprite::create(CCSprite::createWithSpriteFrameName(newgameNormal_char), CCSprite::createWithSpriteFrameName(newgameSelected_char), this, menu_selector(UiLayer::exitGame));
-    newgameMenuItem->retain();
+    backMenuItem = CCMenuItemSprite::create(CCSprite::createWithSpriteFrameName(backNormal_char), CCSprite::createWithSpriteFrameName(backSelected_char), this, menu_selector(UiLayer::backGame));
+    
     //pauseMenu
-    resumeMenuItem->setPosition(ccp(400,400+resumeMenuItem->getContentSize().height/2));
-    newgameMenuItem->setPosition(ccp(400,400-newgameMenuItem->getContentSize().height/2));
-    pauseMenu = CCMenu::create(resumeMenuItem,newgameMenuItem,NULL);
-    pauseMenu->setPosition(CCPointZero);
-    pauseMenu->retain();
+//    resumeMenuItem->setPosition(ccp(400,400+resumeMenuItem->getContentSize().height/2));
+//    newgameMenuItem->setPosition(ccp(400,400-newgameMenuItem->getContentSize().height/2));
+    pauseMenu = CCMenu::create(resumeMenuItem,newgameMenuItem,backMenuItem,NULL);
+    pauseMenu->setPosition(ccp(800 / 2, 800 / 2));
+    pauseMenu->alignItemsVerticallyWithPadding(10);
     pauseLayer->addChild(pauseMenu);
     pauseLayer->setVisible(false);
     this->addChild(pauseLayer);
@@ -189,9 +192,13 @@ void UiLayer::exitGame(CCObject *pObject){
 
 void UiLayer::resumeGame(CCObject *pObject){
     CCLog("resume game");
-    CCSize size = CCDirector::sharedDirector()->getWinSize();
     pauseLayer->setVisible(false);
     CCDirector::sharedDirector()->resume();
+}
+void UiLayer::backGame(CCObject *pObject){
+    CCScene *menuScene = MenuScene::create();
+    CCDirector::sharedDirector()->replaceScene(menuScene);
+    this->resumeGame(NULL);
 }
 
 void UiLayer::updateScore(int score)

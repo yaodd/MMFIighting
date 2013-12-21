@@ -348,7 +348,6 @@ void GameLayer::updateEnemys(float dt){
                                     if (playerSprite->getHealthPoint() <= 0) {
                                         actionType = kActionTypeDie;
                                         playerSprite->setLifeNumber(playerSprite->getLifeNumber() - 1);
-                                        this->delegate->decreaseHeart();
                                     }
                                     playerSprite->setAnimateAction(actionType);
                                     
@@ -419,6 +418,7 @@ void GameLayer::gameOver(){
 void GameLayer::updatePlayHP(float value)
 {
     this->delegate->updateHp(value);
+    this->delegate->decreaseHeart();
 }
 
 
