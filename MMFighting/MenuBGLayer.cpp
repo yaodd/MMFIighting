@@ -35,8 +35,14 @@ bool MenuBGLayer::init(){
         this->addChild(background,0);
         
         CCSprite *nameSprite = CCSprite::createWithSpriteFrameName(gameNameImageName);
-        nameSprite->setPosition(ccp(winSize.width / 2, winSize.height / 4 * 3 - 100));
+        nameSprite->setPosition(ccp(0 - winSize.width / 2, winSize.height / 4 * 3 - 100));
         this->addChild(nameSprite,0);
+        CCActionInterval *move = CCMoveTo::create(1, ccp(winSize.width / 2, winSize.height / 4 * 3 - 100));
+        
+//        CCEaseElasticOut *out = CCEaseElasticOut::create(move,0.5);
+//        CCEaseBackOut *out = CCEaseBackOut::create(move);
+        CCEaseBounceOut *out = CCEaseBounceOut::create(move);
+        nameSprite->runAction(out);
         
         CCString *initStr = CCString::createWithFormat("%s000.png",animationImageName);
         CCSprite *bgAnimateSprite = CCSprite::createWithSpriteFrameName(initStr->getCString());

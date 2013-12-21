@@ -137,9 +137,10 @@ void GameHelpLayer::onCCJoyStickDeactivated(CCNode *sender){
 
 void GameHelpLayer::handAction(CCScene *pObject)
 {
-    if (player->actionType == kActionTypeBeingHit_1 || player->actionType == kActionTypeBeingHit_2) {
+    if (player->actionType == kActionTypeBeingHit_1 || player->actionType == kActionTypeBeingHit_2 || player->actionType == kActionSuperHit || player->actionType == kActionTypeDie) {
         return;
     }
+
     if (player->actionType != kActionTypeHit_4) {
         player->stopAllActions();//出招前停止所有动作，除非是第四招
     }

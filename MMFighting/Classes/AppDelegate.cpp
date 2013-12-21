@@ -12,6 +12,16 @@
 #include "SimpleAudioEngine.h"
 #include "GameScene.h"
 #include "MenuScene.h"
+#include "GameOverScene.h"
+
+const char allImagePlistName[30] = "MMFightingAllImage.plist";
+const char allImagePngName[30] = "MMFightingAllImage.png";
+const char allImagePvrName[30] = "MMFightingAllImage.pvr.ccz";
+
+const char allImagePlistName2[30] = "MMFightingAllImage2.plist";
+const char allImagePngName2[30] = "MMFightingAllImage2.png";
+const char allImagePvrName2[30] = "MMFightingAllImage2.pvr.ccz";
+
 
 USING_NS_CC;
 using namespace CocosDenshion;
@@ -38,14 +48,16 @@ bool AppDelegate::applicationDidFinishLaunching()
     
     
     // turn on display FPS
-    pDirector->setDisplayStats(true);
+    pDirector->setDisplayStats(false);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
-
+    
+    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(allImagePlistName, allImagePvrName);
+    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(allImagePlistName2,allImagePvrName2);
     // create a scene. it's an autorelease object
     CCScene *pScene = MenuScene::create();
-
+//    CCScene *pScene = GameOverScene::create(12312);
     // run
     pDirector->runWithScene(pScene);
 

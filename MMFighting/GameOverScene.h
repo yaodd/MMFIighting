@@ -21,6 +21,7 @@ class GameOverScene : public CCScene
 public:
     GameOverScene(void);
     ~GameOverScene(void);
+    GameOverScene(int score);
     CREATE_FUNC(GameOverScene);
     virtual bool init();
     
@@ -29,6 +30,10 @@ public:
     CCSize winSize;
     
     GameOverLayer *gameOverLayer;
+    static GameOverScene *create(int score);
+    
+    int score;
+    
 };
 
 #endif /* defined(__MMFighting__GameOverScene__) */

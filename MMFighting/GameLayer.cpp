@@ -48,14 +48,21 @@ const char effect3[20] = "effect3.mp3";
 const char effect4[20] = "effect4.mp3";
 const char effect5[20] = "effect5.mp3";
 const char effect6[20] = "effect6.mp3";
+const char healthImageName[20] = "health.png";
 
 GameLayer::GameLayer(){
 //    this->init();
 }
 GameLayer::~GameLayer(){
+    
     this->unscheduleUpdate();
+    int healthValue = playerSprite->getHealthPoint();
+    int lifeNumber = playerSprite->getLifeNumber();
+    CCArray *enemyArr = _enemys;
+    int scoreValue = this->score;
+    CCDictionary *saveDictionary = CCDictionary::create();
+//    saveDictionary->setObject(, <#const std::string &key#>)
 }
-
 
 bool GameLayer::init(){
     bool pRet = false;
@@ -87,7 +94,8 @@ bool GameLayer::init(){
         playerSprite->setAnimateAction(kActionTypeNone);
         
         _enemys = NULL;
-        this->initEnemys();
+        this->setEnemys(CCArray::createWithCapacity(1000));
+//        this->addEnemys(1);
         
         joyStick = CCJoystick::create( BALL_RADIUS, MOVE_AREA_RADIUS,HIT_AREA_RADIUS, IS_FOLLOW_TOUCH, IS_CAN_VISIBLE, IS_AUTO_HIDE, HAS_ANIMATION);
         //        joyStick->setBallTexture(ballImageName);
@@ -109,7 +117,8 @@ bool GameLayer::init(){
         hitMenu->setPosition(ccp(2048 - 1000, 800));
         hitMenu->alignItemsHorizontallyWithPadding(30);
         this->addChild(hitMenu,2);
-        
+        timeIndex = 0;
+        healthSprite = NULL;
         this->scheduleUpdate();
         pRet = true;
     } while (0);
@@ -133,8 +142,33 @@ void GameLayer::playEffect(int i){
 }
 
 void GameLayer::update(float dt){
-//    CCLog("update");
+//    CCLog("update %f",dt);
     
+    timeIndex++;
+    if (timeIndex % 300 == 0 || timeIndex == 60) {
+        addEnemys(1);
+    }
+    if (timeIndex % 1800 == 0) {
+        addHealthSprite();
+    }
+    if (timeIndex % 180 == 0) {
+        CCObject *pObject;
+        CCARRAY_FOREACH(_enemys, pObject)
+        {
+            EnemySprite *sprite = (EnemySprite *)pObject;
+            sprite->setWalkSpeed(sprite->getWalkSpeed() + 10);
+            
+        }
+    }
+    if (timeIndex % 60 == 0) {
+        if (healthSprite != NULL) {
+            healthSprite->setTag(healthSprite->getTag() + 1);
+            if (healthSprite->getTag() == 10) {
+                healthSprite->removeFromParent();
+                healthSprite = NULL;
+            }
+        }
+    }
 
     playerSprite->update(dt);
     this->updateEnemys(dt);
@@ -144,25 +178,37 @@ void GameLayer::update(float dt){
         CCSprite *sprite = (CCSprite *)pObject;
         _actors->reorderChild(sprite, (int)(768 * 2 - sprite->getPosition().y));
     }
+    
+    if (healthSprite != NULL) {
+        if (playerSprite->getTouchBox().actual.intersectsRect(healthSprite->boundingBox())) {
+            int value = (playerSprite->getHealthPoint() + 20 < HEALTH_POINT_DEFAULT) ? (playerSprite->getHealthPoint() + 20) : HEALTH_POINT_DEFAULT;
+            playerSprite->setHealthPoint(value);
+            this->delegate->updateHp(value);
+            healthSprite->removeFromParent();
+            healthSprite = NULL;
+        }
+    }
+    
 }
 
-void GameLayer::initEnemys(){
-    int enemyCount = 2;
-    this->setEnemys(CCArray::createWithCapacity(enemyCount));
+
+void GameLayer::addEnemys(int number){
     
-    for (int i = 0; i < enemyCount; i ++) {
+    for (int i = 0; i < number; i ++) {
         EnemySprite *enemy = EnemySprite::enemySprite(0);
         _actors->addChild(enemy);
         _enemys->addObject(enemy);
-        int minX = CENTER_TO_SIDE + MAP_WIDTH / 2;
+        int minX = CENTER_TO_SIDE;
         int maxX = MAP_WIDTH - CENTER_TO_SIDE;
         int minY = CENTER_TO_BOTTOM;
-        int maxY = MAP_HEIGHT - CENTER_TO_BOTTOM;
+        int maxY = MAP_HEIGHT + CENTER_TO_BOTTOM;
         enemy->setPosition(ccp(random_range(minX, maxX), random_range(minY, maxY)));
         enemy->setDesiredPosition(enemy->getPosition());
         enemy->setTag(ENEMY_TAG);
-        
-        enemy->setAnimateAction(kActionStateNone);
+//        enemy->setOpacity(0);
+//        CCActionInterval *fadeIn = CCFadeIn::create(0.5);
+//        enemy->runAction(fadeIn);
+//        enemy->setAnimateAction(kActionStateNone);
         
         
         
@@ -189,7 +235,7 @@ void GameLayer::onCCJoyStickDeactivated(CCNode *sender){
 //出拳
 void GameLayer::handAction(CCObject *pScene){
 //    CCLOG("before");
-    if (playerSprite->actionType == kActionTypeBeingHit_1 || playerSprite->actionType == kActionTypeBeingHit_2 || playerSprite->actionType == kActionSuperHit) {
+    if (playerSprite->actionType == kActionTypeBeingHit_1 || playerSprite->actionType == kActionTypeBeingHit_2 || playerSprite->actionType == kActionSuperHit || playerSprite->actionType == kActionTypeDie) {
         return;
     }
     if (playerSprite->actionType != kActionTypeHit_4) {
@@ -289,7 +335,29 @@ void GameLayer::footAction(CCObject *pScene){
     }
 }
 
-                    
+void GameLayer::addHealthSprite()
+{
+    healthSprite = CCSprite::createWithSpriteFrameName(healthImageName);
+    int minX = CENTER_TO_SIDE;
+    int maxX = MAP_WIDTH - CENTER_TO_SIDE;
+    int minY = 50;
+    int maxY = MAP_HEIGHT + 0;
+    int realX = random_range(minX, maxX);
+    int realY = random_range(minY, maxY);
+    healthSprite->setPosition(ccp(realX, realY + 800));
+    healthSprite->setOpacity(0);
+    CCActionInterval *fadeIn = CCFadeIn::create(0.5);
+    CCFiniteTimeAction *seq = CCSequence::create(fadeIn,fadeIn->reverse(),NULL);
+    healthSprite->runAction(CCRepeatForever::create((CCActionInterval *)seq));
+    CCActionInterval *move = CCMoveTo::create(1, ccp(realX, realY));
+    CCActionInterval *out = CCEaseBounceOut::create(move);
+    healthSprite->runAction(out);
+    healthSprite->setTag(0);
+    this->addChild(healthSprite);
+    
+}
+
+
 //敌人AI
 void GameLayer::updateEnemys(float dt){
 //    CCLog("before");
@@ -302,7 +370,7 @@ void GameLayer::updateEnemys(float dt){
     CCARRAY_FOREACH(_enemys, pObject){
         EnemySprite *enemy = (EnemySprite *)pObject;
         enemy->update(dt);
-        if (enemy->actionState != kActionStateDie) {
+        if (enemy->actionState != kActionStateDie && enemy->actionState != kActionStateBeingHit_1 && enemy->actionState != kActionStateBeingHit_2) {
             //1
             alive++;
             //2
@@ -348,13 +416,13 @@ void GameLayer::updateEnemys(float dt){
                                     if (playerSprite->getHealthPoint() <= 0) {
                                         actionType = kActionTypeDie;
                                         playerSprite->setLifeNumber(playerSprite->getLifeNumber() - 1);
-                                        this->delegate->decreaseHeart();
                                     }
+                                    CCLOG("before");
                                     playerSprite->setAnimateAction(actionType);
-                                    
+                                    CCLOG("after");
                                     
                                     audioManager->playEffect(i);
-                                    CCLOG("finished hurt %d",hurt);
+//                                    CCLOG("finished hurt %d",hurt);
                                 }
                             }
                         }
@@ -413,12 +481,13 @@ int GameLayer::getHurtWithSprite(EnemySprite *attackSprite, PlayerSprite *beHitS
 }
 #pragma PlayerSpriteDelegate mark
 void GameLayer::gameOver(){
-    GameOverScene *gameOverScene = GameOverScene::create();
+    GameOverScene *gameOverScene = GameOverScene::create(this->score);
     CCDirector::sharedDirector()->replaceScene(gameOverScene);
 }
 void GameLayer::updatePlayHP(float value)
 {
     this->delegate->updateHp(value);
+    this->delegate->decreaseHeart();
 }
 
 

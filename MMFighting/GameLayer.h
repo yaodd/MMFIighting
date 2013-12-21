@@ -55,6 +55,7 @@ public:
     CCJoystick *joyStick;
     CCSize winSize;
     PlayerSprite *playerSprite;
+    CCSprite *healthSprite;
 
     
     
@@ -65,7 +66,7 @@ public:
     CCSpriteBatchNode *_actors;
 //    CCSpriteBatchNode *playerNode;
     
-    void initEnemys();
+    void addEnemys(int number);
     
     void initEffects();
     
@@ -78,7 +79,9 @@ public:
     
     virtual void gameOver(void);
     virtual void updatePlayHP(float value);
+    void addHealthSprite();
     
+    int timeIndex;
     
     
 //    void onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint direction, float power);

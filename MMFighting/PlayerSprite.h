@@ -11,6 +11,7 @@
 
 #include <cocos2d.h>
 #include "Defines.h"
+#define HEALTH_POINT_DEFAULT       123
 
 class PlayerSpriteDelegate{
 public:
@@ -59,6 +60,7 @@ public:
     ActionType actionType;
     CC_SYNTHESIZE(BoundingBox, _hitBox, Hitbox);
     CC_SYNTHESIZE(BoundingBox, _attackBox, AttackBox);
+    CC_SYNTHESIZE(BoundingBox, _touchBox, TouchBox);
     CC_SYNTHESIZE(CCPoint, _desiredPosition, DesiredPosition);
     CC_SYNTHESIZE(CCPoint, _velocity, Velocity);
     

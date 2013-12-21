@@ -8,7 +8,6 @@
 
 #include "PlayerSprite.h"
 
-#define HEALTH_POINT_DEFAULT       123
 #define ATTACK_DEFAULT             20
 #define DEFEND_DEFAULT             20
 #define ACTIVITY_DEFAULT           20
@@ -85,6 +84,8 @@ void PlayerSprite::myInit()
     this->setHitbox(this->createBoundingBoxWithOrigin(ccp(-CENTER_TO_SIDE, -CENTER_TO_BOTTOM),
                                                       CCSizeMake(CENTER_TO_SIDE * 2, CENTER_TO_BOTTOM * 2)));
     this->setAttackBox(this->createBoundingBoxWithOrigin(ccp(CENTER_TO_SIDE, -10), CCSizeMake(20, 20)));
+//    this->setTouchBox(this->createBoundingBoxWithOrigin(ccp(0, -CENTER_TO_BOTTOM), CCSizeMake(CENTER_TO_SIDE, CENTER_TO_BOTTOM / 2)));
+    this->_touchBox.original = CCRectMake(0, -CENTER_TO_BOTTOM, CENTER_TO_SIDE, CENTER_TO_BOTTOM / 2);
     beingHitCount = 0;
     _walkSpeed = WALKSPEED_DEFAULT;
     _healthPoint = HEALTH_POINT_DEFAULT;
@@ -121,6 +122,7 @@ CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt
 
 void PlayerSprite::setAnimateAction(ActionType actionType)
 {
+//    CCLOG("inininininin");
     this->actionType = actionType;
     CCAnimate *runAnimate;
     this->stopAllActions();
@@ -186,7 +188,6 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
 //        runArray->retain();
         this->runAction(CCSequence::create(runArray));
     }
-    
 }
 
 void PlayerSprite::runFinishedCallBack()
@@ -199,8 +200,8 @@ void PlayerSprite::runFinishedCallBack()
         CCSequence *pActSeq = CCSequence::create(act,act2,finished,NULL);
         this->runAction(CCRepeat::create(pActSeq, 4));
     }else{
-        this->actionType = kActionTypeNone;
         this->stopAllActions();
+        this->actionType = kActionTypeNone;
         this->setAnimateAction(this->actionType);
     }
 }
@@ -231,6 +232,7 @@ void PlayerSprite::transformBoxes()
     _attackBox.actual.origin = ccpAdd(this->getPosition(), ccp(_attackBox.original.origin.x +
                                                                (this->getScaleX() == SCALE_DEFAULT ? (- _attackBox.original.size.width - _hitBox.original.size.width) : 0),
                                                                _attackBox.original.origin.y));
+    _touchBox.actual.origin = ccpAdd(this->getPosition(), ccp(_touchBox.original.origin.x, _touchBox.original.origin.y));
 }
 
 void PlayerSprite::setPosition(CCPoint position)
