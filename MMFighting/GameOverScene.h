@@ -25,7 +25,6 @@ public:
     CREATE_FUNC(GameOverScene);
     virtual bool init();
     
-    AudioManager *audioManager;
     
     CCSize winSize;
     

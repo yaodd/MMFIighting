@@ -4,14 +4,14 @@
 //
 //  Created by yaodd on 13-10-23.
 //
-//
+//  主角火柴人的类
 
 #ifndef __MMFighting__PlayerSprite__
 #define __MMFighting__PlayerSprite__
 
 #include <cocos2d.h>
 #include "Defines.h"
-#define HEALTH_POINT_DEFAULT       123
+#define HEALTH_POINT_DEFAULT       123  //初始生命值
 
 class PlayerSpriteDelegate{
 public:
@@ -61,6 +61,7 @@ public:
     CC_SYNTHESIZE(BoundingBox, _hitBox, Hitbox);
     CC_SYNTHESIZE(BoundingBox, _attackBox, AttackBox);
     CC_SYNTHESIZE(BoundingBox, _touchBox, TouchBox);
+    CC_SYNTHESIZE(BoundingBox, _superHitBox, SuperHitBox);
     CC_SYNTHESIZE(CCPoint, _desiredPosition, DesiredPosition);
     CC_SYNTHESIZE(CCPoint, _velocity, Velocity);
     

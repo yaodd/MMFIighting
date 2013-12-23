@@ -46,7 +46,7 @@ GameHelpLayer::~GameHelpLayer()
 {
     
 }
-
+CCFiniteTimeAction *createHelpMenuItemAction(float delay,float duration, float moveBy);
 bool GameHelpLayer::init()
 {
     bool pRet = false;
@@ -61,14 +61,18 @@ bool GameHelpLayer::init()
         CCSprite *handNor = CCSprite::createWithSpriteFrameName(handImageName1);
         CCSprite *handPre = CCSprite::createWithSpriteFrameName(handImageName2);
         CCMenuItemSprite *handItem = CCMenuItemSprite::create(handNor, handPre, this, menu_selector(GameHelpLayer::handAction));
+        CCFiniteTimeAction *handSeq = createHelpMenuItemAction(0, 0.5, 350 + handNor->getContentSize().width / 2);
+        handItem->runAction(handSeq);
         
         CCSprite *footNor = CCSprite::createWithSpriteFrameName(footImageName1);
         CCSprite *footPre = CCSprite::createWithSpriteFrameName(footImageName2);
         CCMenuItemSprite *footItem = CCMenuItemSprite::create(footNor, footPre, this, menu_selector(GameHelpLayer::footAction));
+        CCFiniteTimeAction *footSeq = createHelpMenuItemAction(0.25, 0.5, 350 + handNor->getContentSize().width / 2);
+        footItem->runAction(footSeq);
        
         CCMenu *mainMenu = CCMenu::create(handItem,footItem,NULL);
         mainMenu->alignItemsVerticallyWithPadding(10);
-        mainMenu->setPosition(350, winSize.height - 600);
+        mainMenu->setPosition(-1 * handNor->getContentSize().width / 2, winSize.height - 600);
         this->addChild(mainMenu);
         
         
@@ -76,7 +80,9 @@ bool GameHelpLayer::init()
         char images[3][20] = {"hitWin.png","kickWin.png","moveWin.png"};
         for (int i = 0; i < 3; i ++) {
             CCSprite *label = CCSprite::createWithSpriteFrameName(images[i]);
-            label->setPosition(ccp(920, winSize.height - (300 * i) - 400));
+            CCFiniteTimeAction *labelSeq = createHelpMenuItemAction(i * 0.25, 0.5, 920 + label->getContentSize().width / 2);
+            label->setPosition(ccp(-1 * label->getContentSize().width / 2, winSize.height - (300 * i) - 400));
+            label->runAction(labelSeq);
             this->addChild(label);
         }
         player = PlayerSprite::playSprite();
@@ -88,9 +94,11 @@ bool GameHelpLayer::init()
         //        joyStick->setBallTexture(ballImageName);
         joyStick->setDockTexture(handShankImageName);
         joyStick->setStickTexture(stickImageName);
-        joyStick->setPosition(350, 495);
+        joyStick->setPosition(-1 * handNor->getContentSize().width / 2, 495);
         joyStick->setDelegate(this);
         this->addChild(joyStick,1000);
+        CCFiniteTimeAction *joySeq = createHelpMenuItemAction(0.5, 0.5, 350 + handNor->getContentSize().width / 2);
+        joyStick->runAction(joySeq);
         
         CCSprite *preNor = CCSprite::createWithSpriteFrameName(perImageName1);
         CCSprite *preClick = CCSprite::createWithSpriteFrameName(perImageName2);
@@ -110,6 +118,16 @@ bool GameHelpLayer::init()
     } while (0);
     
     return pRet;
+}
+
+CCFiniteTimeAction *createHelpMenuItemAction(float delay,float duration, float moveBy)
+{
+    CCActionInterval *move = CCMoveBy::create(duration, ccp(moveBy, 0));
+    CCActionInterval *out = CCEaseElasticOut::create(move,1);
+    CCActionInterval *delayTime = CCDelayTime::create(delay);
+    CCFiniteTimeAction *seq = CCSequence::create(delayTime,out,NULL);
+    
+    return seq;
 }
 
 #pragma CCJoystickDelegate method

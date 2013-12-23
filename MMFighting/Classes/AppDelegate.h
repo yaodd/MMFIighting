@@ -43,6 +43,7 @@ public:
     
      bool  m_bRetinaMode;
     
+    
 };
 
 #endif // _APP_DELEGATE_H_
