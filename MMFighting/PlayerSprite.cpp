@@ -8,11 +8,11 @@
 
 #include "PlayerSprite.h"
 
-#define ATTACK_DEFAULT             20
-#define DEFEND_DEFAULT             20
-#define ACTIVITY_DEFAULT           20
-#define WALKSPEED_DEFAULT          150
-#define LIFE_NUMBER_DEFAULT        3
+#define ATTACK_DEFAULT             20   //初始攻击力
+#define DEFEND_DEFAULT             20   //初始防御力
+#define ACTIVITY_DEFAULT           20   //初始敏捷
+#define WALKSPEED_DEFAULT          220  //初始移动速度
+#define LIFE_NUMBER_DEFAULT        3    //初始生命数量
 
 const char walkImageName[20] = "walk";
 const char dieImageName[20] = "die";
@@ -46,7 +46,7 @@ PlayerSprite *PlayerSprite::playSprite()
     CC_SAFE_DELETE(playSprite);
     return NULL;
 }
-
+//对象的初始化，包括各种动作和数值
 void PlayerSprite::myInit()
 {
     this->actionType = kActionTypeNone;
@@ -94,7 +94,7 @@ void PlayerSprite::myInit()
     _activity = ACTIVITY_DEFAULT;
     _lifeNumber = LIFE_NUMBER_DEFAULT;
 }
-
+//生成动画的函数
 CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt)
 {
     int num = imageNum;
@@ -120,6 +120,7 @@ CCAnimate *PlayerSprite::getAnimate(int imageNum,const char  *imageName,float dt
     
 }
 
+//运行动画的函数
 void PlayerSprite::setAnimateAction(ActionType actionType)
 {
 //    CCLOG("inininininin");
@@ -150,16 +151,19 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
             break;
         case kActionTypeBeingHit_1:
             runAnimate = beingHitAnimate_1;
+            CCLog("beingHittttttttttttt1");
             break;
         case kActionTypeBeingHit_2:
             runAnimate = beingHitAnimate_2;
+            CCLog("beingHittttttttttttt2");
             break;
         case kActionSuperHit:
             runAnimate = superHitAnimate;
         default:
+            CCLog("default");
             break;
     }
-    
+    CCLog("affffffffffff");
     if (this->actionType == kActionTypeWalk) {
         this->runAction(CCRepeatForever::create(runAnimate));
         
@@ -189,7 +193,7 @@ void PlayerSprite::setAnimateAction(ActionType actionType)
         this->runAction(CCSequence::create(runArray));
     }
 }
-
+//动画结束回调
 void PlayerSprite::runFinishedCallBack()
 {
     if (this->_healthPoint <= 0) {
@@ -215,7 +219,7 @@ void PlayerSprite::dieFinishHandler(){
         this->setAnimateAction(kActionTypeNone);
     }
 }
-
+//生成包围盒的函数
 BoundingBox PlayerSprite::createBoundingBoxWithOrigin(CCPoint origin, CCSize size)
 {
     BoundingBox boundingBox;
@@ -225,7 +229,7 @@ BoundingBox PlayerSprite::createBoundingBoxWithOrigin(CCPoint origin, CCSize siz
     boundingBox.actual.size = size;
     return boundingBox;
 }
-
+//根据方向改变包围盒
 void PlayerSprite::transformBoxes()
 {
     _hitBox.actual.origin = ccpAdd(this->getPosition(), ccp(_hitBox.original.origin.x, _hitBox.original.origin.y));
@@ -234,18 +238,20 @@ void PlayerSprite::transformBoxes()
                                                                _attackBox.original.origin.y));
     _touchBox.actual.origin = ccpAdd(this->getPosition(), ccp(_touchBox.original.origin.x, _touchBox.original.origin.y));
 }
-
+//重写位置函数
 void PlayerSprite::setPosition(CCPoint position)
 {
     CCSprite::setPosition(position);
     this->transformBoxes();
 }
+//跟新对象数据
 void PlayerSprite::update(float dt){
     if (actionType == kActionTypeWalk) {
         CCPoint resultPoint = ccpAdd(this->getPosition(),ccpMult(_velocity, dt));
         this->updatePosition(resultPoint);
     }
 }
+//更新对象位置
 void PlayerSprite::updatePosition(CCPoint resultPoint)
 {
     CCPoint point = this->getPosition();
@@ -258,6 +264,7 @@ void PlayerSprite::updatePosition(CCPoint resultPoint)
     }
     _desiredPosition = point;
 }
+//主角移动
 void PlayerSprite::walkWithDirection(CCPoint direction){
     if (actionType == kActionTypeNone)
     {

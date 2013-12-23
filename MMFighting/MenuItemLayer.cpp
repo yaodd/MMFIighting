@@ -9,6 +9,8 @@
 #include "MenuItemLayer.h"
 #include "GameScene.h"
 #include "GameHelpScene.h"
+
+#include "Defines.h"
 const char continueImageName1[20] = "Continue1.png";
 const char continueImageName2[20] = "Continue2.png";
 const char helpImageName1[20] = "HELP1.png";
@@ -25,17 +27,19 @@ MenuItemLayer::~MenuItemLayer()
 {
     
 }
-CCFiniteTimeAction *createMenuItemAction(float delay,float duration);
+//CCFiniteTimeAction *createMenuItemAction(float delay,float duration);
 bool MenuItemLayer::init(){
     bool pRet = false;
     do {
         
         winSize = CCDirector::sharedDirector()->getWinSize();
         
+        CCLog("size %f %f",winSize.width, winSize.height);
+        
         CCSprite *continueNor = CCSprite::createWithSpriteFrameName(continueImageName1);
         CCSprite *continuePre = CCSprite::createWithSpriteFrameName(continueImageName2);
         CCMenuItemSprite *continueItem = CCMenuItemSprite::create(continueNor, continuePre, this, menu_selector(MenuItemLayer::continueAction));
-        CCFiniteTimeAction *continueSeq = createMenuItemAction(0,0.5);
+        CCFiniteTimeAction *continueSeq = createMenuItemAction(0,0.5,-270 * 3 + 100);
         continueItem->runAction(continueSeq);
         
         CCSprite *playNor = CCSprite::createWithSpriteFrameName(playImageName1);
@@ -46,7 +50,7 @@ bool MenuItemLayer::init(){
         
         CCFiniteTimeAction *seq = CCSequence::create(colorAction,colorBack,NULL);
 //        playItem->runAction(seq);
-        CCFiniteTimeAction *playSeq = createMenuItemAction(0.25,0.5);
+        CCFiniteTimeAction *playSeq = createMenuItemAction(0.25,0.5,-270 * 3 + 100);
         playItem->runAction(playSeq);
         playItem->runAction(CCRepeatForever::create((CCActionInterval *)seq));
         
@@ -54,7 +58,7 @@ bool MenuItemLayer::init(){
         CCSprite *helpPre = CCSprite::createWithSpriteFrameName(helpImageName2);
         CCMenuItemSprite *helpItem = CCMenuItemSprite::create(helpNor, helpPre, this, menu_selector(MenuItemLayer::helpAction));
         
-        CCFiniteTimeAction *helpSeq = createMenuItemAction(0.5,0.5);
+        CCFiniteTimeAction *helpSeq = createMenuItemAction(0.5,0.5,-270 * 3 + 100);
         helpItem->runAction(helpSeq);
         
         CCMenu *mainMenu = CCMenu::create(continueItem,playItem,helpItem,NULL);
@@ -67,6 +71,7 @@ bool MenuItemLayer::init(){
     
     return pRet;
 }
+/*
 CCFiniteTimeAction *createMenuItemAction(float delay,float duration)
 {
     CCActionInterval *move = CCMoveBy::create(duration, ccp(-270 * 3 + 100, 0));
@@ -75,13 +80,13 @@ CCFiniteTimeAction *createMenuItemAction(float delay,float duration)
     CCFiniteTimeAction *seq = CCSequence::create(delayTime,out,NULL);
     
     return seq;
-}
+}*/
 
 
 void MenuItemLayer::playAction(CCObject *pScene)
 {
     CCLOG("play");
-    CCScene *gameScene = GameScene::create();
+    CCScene *gameScene = GameScene::create(true);
     CCDirector::sharedDirector()->replaceScene(gameScene);
     
 }
@@ -92,5 +97,6 @@ void MenuItemLayer::helpAction(CCObject *pScene)
 }
 void MenuItemLayer::continueAction(CCObject *pScene)
 {
-    
+    CCScene *gameScene = GameScene::create(false);
+    CCDirector::sharedDirector()->replaceScene(gameScene);
 }

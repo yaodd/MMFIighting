@@ -4,15 +4,15 @@
 //
 //  Created by yaodd on 13-11-4.
 //
-//
+//  敌人火柴人的类
 
 #include "EnemySprite.h"
 
-#define HEALTH_POINT_DEFAULT       100
-#define ATTACK_DEFAULT             30
-#define DEFEND_DEFAULT             10
-#define ACTIVITY_DEFAULT           10
-#define WALKSPEED_DEFAULT          100
+#define HEALTH_POINT_DEFAULT       100      //初始生命值
+#define ATTACK_DEFAULT             30       //初始攻击力
+#define DEFEND_DEFAULT             10       //初始防御力
+#define ACTIVITY_DEFAULT           10       //初始敏捷
+#define WALKSPEED_DEFAULT          100      //初始移动速度
 
 
 
@@ -45,7 +45,7 @@ EnemySprite *EnemySprite::enemySprite(int type)
     CC_SAFE_DELETE(enemySprite);
     return NULL;
 }
-
+//对象的初始化，包括各种动作和数值
 void EnemySprite::myInit(){
     this->setScale(SCALE_DEFAULT);
     this->actionState = kActionStateNone;
@@ -56,7 +56,7 @@ void EnemySprite::myInit(){
     walkAnimate = getAnimate(11, walkImageName, 0.1f);
     walkAnimate->retain();
     
-    dieAnimate = getAnimate(4, dieImageName, 0.3f);
+    dieAnimate = getAnimate(4, dieImageName, 0.2f);
     dieAnimate->retain();
     
     beingHitAnimate_1 = getAnimate(1, beingHit1ImageName, 0.4f);
@@ -81,7 +81,7 @@ void EnemySprite::myInit(){
     _activity = ACTIVITY_DEFAULT;
     
 }
-
+//生成动画的函数
 CCAnimate *EnemySprite::getAnimate(int imageNum,const char  *imageName,float dt)
 {
     int num = imageNum;
@@ -104,7 +104,7 @@ CCAnimate *EnemySprite::getAnimate(int imageNum,const char  *imageName,float dt)
     return pRunDouga;
     
 }
-
+//运行动画的函数
 void EnemySprite::setAnimateAction(ActionState actionState)
 {
     this->actionState = actionState;
@@ -147,8 +147,9 @@ void EnemySprite::setAnimateAction(ActionState actionState)
         }
 //        _desiredPosition = point;
         this->updatePosition(point);
+        CCDelayTime *delay = CCDelayTime::create(0.6);
         CCObject *finished = CCCallFunc::create(this, callfunc_selector(EnemySprite::runFinishedCallBack));
-        CCArray *runArray = CCArray::create(runAnimate,finished,NULL);
+        CCArray *runArray = CCArray::create(runAnimate,delay,finished,NULL);
         this->runAction(CCSequence::create(runArray));
     }
     else{
@@ -158,6 +159,8 @@ void EnemySprite::setAnimateAction(ActionState actionState)
     }
     
 }
+
+//动画结束回调
 
 void EnemySprite::runFinishedCallBack()
 {
@@ -169,6 +172,7 @@ void EnemySprite::runFinishedCallBack()
         
         CCSequence *pActSeq = CCSequence::create(act,act2,finished,NULL);
         this->runAction(CCRepeat::create(pActSeq, 1));
+        this->delegate->EnemySpriteBeKilled();
     }
     else{
         this->actionState = kActionStateNone;
@@ -181,6 +185,7 @@ void EnemySprite::runFinishedCallBack()
 void EnemySprite::dieFinishHandler(){
     this->removeFromParent();
 }
+//生成包围盒的函数
 BoundingBox EnemySprite::createBoundingBoxWithOrigin(CCPoint origin, CCSize size)
 {
     BoundingBox boundingBox;
@@ -190,6 +195,7 @@ BoundingBox EnemySprite::createBoundingBoxWithOrigin(CCPoint origin, CCSize size
     boundingBox.actual.size = size;
     return boundingBox;
 }
+//根据方向改变包围盒
 
 void EnemySprite::transformBoxes()
 {
@@ -198,7 +204,7 @@ void EnemySprite::transformBoxes()
                                                                (this->getScaleX() == SCALE_DEFAULT ? (- _attackBox.original.size.width - _hitBox.original.size.width) : 0),
                                                                _attackBox.original.origin.y));
 }
-
+//重写位置函数
 void EnemySprite::setPosition(CCPoint position)
 {
     CCSprite::setPosition(position);
@@ -211,6 +217,7 @@ void EnemySprite::update(float dt){
         this->updatePosition(resultPoint);
     }
 }
+//更新对象位置
 void EnemySprite::updatePosition(CCPoint resultPoint)
 {
     CCPoint point = this->getPosition();
@@ -222,7 +229,7 @@ void EnemySprite::updatePosition(CCPoint resultPoint)
     }
     _desiredPosition = point;
 }
-
+//敌人移动
 void EnemySprite::walkWithDirection(CCPoint direction){
     if (actionState == kActionStateNone)
     {

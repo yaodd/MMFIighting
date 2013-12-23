@@ -12,6 +12,7 @@
 #include "MenuScene.h"
 #define PLAY_HEART_NUMBER_DEFAULT   3
 using namespace std;
+using namespace cocos2d;
 
 const char pauseNormal_char[30] = {"stop1.png"};
 const char pauseSelected_char[30] = {"stop2.png"};
@@ -29,6 +30,33 @@ const char heartImageName[20] = "heart.png";
 
 const string digStr = ":123456789";
 string intToStr(int a);
+//  抛物线运动并同时旋转    -Himi
+//mSprite：需要做抛物线的精灵
+//startPoint:起始位置
+//endPoint:中止位置
+//startA:起始角度
+//endA:中止角度
+//dirTime:起始位置到中止位置的所需时间
+CCAction *getActionWithParabola(CCSprite *mSprite, CCPoint startPoint,CCPoint endPoint, float startAngle, float endAngle, float time){
+    float sx = startPoint.x;
+    float sy = startPoint.y;
+    float ex =endPoint.x+50;
+    float ey =endPoint.y+150;
+    int h = mSprite->getContentSize().height*0.5;
+    //设置精灵的起始角度
+    mSprite->setRotation(startAngle);
+    ccBezierConfig bezier; // 创建贝塞尔曲线
+    bezier.controlPoint_1 = ccp(sx, sy); // 起始点
+    bezier.controlPoint_2 = ccp(sx+(ex-sx)*0.5, sy+(ey-sy)*0.5+200); //控制点
+    bezier.endPosition = ccp(endPoint.x-30, endPoint.y+h); // 结束位置
+    CCBezierTo *actionMove = CCBezierTo::create(time, bezier);
+    //创建精灵旋转的动作
+    CCRotateTo *actionRotate =CCRotateTo::create(time, endAngle);
+    //将两个动作封装成一个同时播放进行的动作
+    CCAction * action = CCSpawn::create(actionMove,actionRotate,NULL);
+    return action;
+}
+
 UiLayer::UiLayer(void){
     
 }
@@ -65,7 +93,6 @@ bool UiLayer::init(){
         gameScoreLabel->setPosition(ccp(900, 1320));
         _heartArray = NULL;
         this->addChild(gameScoreLabel);
-        this->initHeart();
         
         this->initPauseLayer();
         ret = true;
@@ -88,9 +115,9 @@ string intToStr(int a)
     }
     return str;
 }
-void UiLayer::initHeart(){
-    this->setHeartArray(CCArray::createWithCapacity(PLAY_HEART_NUMBER_DEFAULT));
-    for (int i = 0; i < PLAY_HEART_NUMBER_DEFAULT; i ++) {
+void UiLayer::initHeart(int hearts){
+    this->setHeartArray(CCArray::createWithCapacity(hearts));
+    for (int i = 0; i < hearts; i ++) {
         CCSprite *heartSprite = CCSprite::createWithSpriteFrameName(heartImageName);
         heartSprite->setPosition(ccp(100 + 170 * i, 1300));
         this->addChild(heartSprite);
@@ -102,21 +129,20 @@ void UiLayer::initMenu(){
     CCSprite *tempnormalSprite = CCSprite::createWithSpriteFrameName(pauseNormal_char);
     CCSprite *tempselectedSprite = CCSprite::createWithSpriteFrameName(pauseSelected_char);
     pauseButton = CCMenuItemSprite::create(tempnormalSprite, tempselectedSprite, this, menu_selector(UiLayer::popUpTheMenuLayer));
-    pauseButton->setPosition(ccp(size.width - pauseButton->getContentSize().width/2,size.height-pauseButton->getContentSize().height/2));
+//    pauseButton->setPosition(ccp(size.width - pauseButton->getContentSize().width/2 + 50,size.height-pauseButton->getContentSize().height/2 + 50));
     pauseButton->retain();
     
     musicOpen = CCMenuItemImage::create(musicOn_char, musicOn_char);
     musicClosed = CCMenuItemImage::create(musicClose_char, musicClose_char);
     musicButton = CCMenuItemToggle::createWithTarget(this, menu_selector(UiLayer::toggleWithTheMusic), musicOpen,musicClosed,NULL);
-    musicButton->setPosition(ccp(pauseButton->getPosition().x -
-                                 pauseButton->getContentSize().width/2-
-                                 musicButton->getContentSize().width/2,
-                                 pauseButton->getPosition().y));
+//    musicButton->setPosition(ccp(pauseButton->getPosition().x - pauseButton->getContentSize().width/2 -musicButton->getContentSize().width/2 + 50,pauseButton->getPosition().y + 50));
     menu = CCMenu::create(pauseButton,musicButton,NULL);
+    menu->setScale(0.8);
     
     //menu = CCMenu::create(pauseButton,NULL);
     menu->retain();
-    menu->setPosition(CCPointZero);
+    menu->setPosition(ccp(size.width - 550, size.height - 350));
+    menu->alignItemsHorizontallyWithPadding(20);
     this->addChild(menu);
     initWithParticle();
     
@@ -155,11 +181,23 @@ void UiLayer::updateHp(float value){
 void UiLayer::decreaseHeart(){
     int count = _heartArray->count();
     if (count > 0) {
-        CCSprite *heart = (CCSprite *)_heartArray->objectAtIndex(count - 1);
-        _heartArray->removeLastObject();
-        heart->removeFromParent();
+        CCSprite *heart = (CCSprite *)_heartArray->lastObject();
+//        _heartArray->removeLastObject();
+        CCAction *paraAction = getActionWithParabola(heart, heart->getPosition(), ccp(heart->getPositionX() + 80, heart->getPositionY() - 500), heart->getRotation(), heart->getRotation() + 45, 1);
+        CCActionInterval *fadeOut = CCFadeOut::create(1.5);
+        CCObject *finished = CCCallFunc::create(this, callfunc_selector(UiLayer::deleteHeart));
+        CCFiniteTimeAction *seq = CCSequence::create(fadeOut,finished,NULL);
+        heart->runAction(paraAction);
+        heart->runAction(seq);
+//        heart->removeFromParent();
     }
     
+}
+void UiLayer::deleteHeart()
+{
+    CCSprite *heart = (CCSprite *)_heartArray->lastObject();
+    _heartArray->removeLastObject();
+    heart->removeFromParent();
 }
 void UiLayer::toggleWithTheMusic(CCObject* pObject){
     
@@ -177,14 +215,14 @@ void UiLayer::toggleWithTheMusic(CCObject* pObject){
 
 void UiLayer::popUpTheMenuLayer(CCObject* pObject){
     CCLog("popUpTheLayer");
+    this->delegate->pauseMenu();
     CCDirector::sharedDirector()->pause();
-    
     pauseLayer->setVisible(true);
     
 }
 
 void UiLayer::exitGame(CCObject *pObject){
-    CCScene *gameScene = GameScene::create();
+    CCScene *gameScene = GameScene::create(true);
     CCDirector::sharedDirector()->replaceScene(gameScene);
     CCDirector::sharedDirector()->resume();
     CCLog("exit game");
@@ -192,6 +230,7 @@ void UiLayer::exitGame(CCObject *pObject){
 
 void UiLayer::resumeGame(CCObject *pObject){
     CCLog("resume game");
+    this->delegate->resumeMenu();
     pauseLayer->setVisible(false);
     CCDirector::sharedDirector()->resume();
 }
@@ -199,6 +238,7 @@ void UiLayer::backGame(CCObject *pObject){
     CCScene *menuScene = MenuScene::create();
     CCDirector::sharedDirector()->replaceScene(menuScene);
     this->resumeGame(NULL);
+    this->delegate->backToMainMenu();
 }
 
 void UiLayer::updateScore(int score)
@@ -206,7 +246,7 @@ void UiLayer::updateScore(int score)
     const char *arr = intToStr(score).c_str();
     gameScoreLabel->setString(arr);
 }
-
+//雪花效果
 void UiLayer::initWithParticle(){
     //CCParticleSystemQuad *m_emmiter = new CCParticleSystemQuad();
     CCParticleSystemQuad *m_emitter=new CCParticleSystemQuad();
@@ -281,4 +321,15 @@ void UiLayer::initWithParticle(){
     m_emitter->setEmissionRate(25);
     
     addChild(m_emitter);
+}
+#pragma mark
+#pragma pad
+void UiLayer::keyBackClicked(void){
+    CCLog("sssssssssssssss");
+    if (pauseLayer->isVisible()) {
+        CCDirector::sharedDirector()->pause();
+    }
+}
+void UiLayer::keyMenuClicked(void){
+     CCLog("bbbbbbbbbbbbbbb");
 }

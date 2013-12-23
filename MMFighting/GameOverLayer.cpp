@@ -9,8 +9,11 @@
 #include "GameOverLayer.h"
 #include "GameScene.h"
 #include "MenuScene.h"
-#include "DTCursorTextField.h"
 #include <string>
+#include <Json.h>
+#include "Dao.h"
+#include "GlobalModel.h"
+#include "RankListScene.h"
 
 using namespace std;
 const char bgImageName[20] = "backgroundOver.png";
@@ -22,6 +25,7 @@ const char returnImageName1[20] = "Return1.png";
 const char returnImageName2[20] = "Return2.png";
 const char gameoverPlistName[30] = "GameOver.plist";
 const char scoreBgImageName[20] = "scoreBackgr.png";
+
 
 const string digStr = ":123456789";
 
@@ -45,7 +49,9 @@ GameOverLayer *GameOverLayer::create(int _score)
     
     return pRet;
 }
+//int转string函数
 string intToStrOver(int a);
+//生成一个抛物线动画
 void moveWithParabola(CCNode *mSprite, CCPoint startPoint, CCPoint endPoint ,float time);
 CCFiniteTimeAction *createOverMenuItemAction(float delay,float duration);
 
@@ -79,7 +85,7 @@ bool GameOverLayer::init()
         
         CCSprite *enterNor = CCSprite::createWithSpriteFrameName(enterImageName1);
         CCSprite *enterPre = CCSprite::createWithSpriteFrameName(enterImageName2);
-        CCMenuItemSprite *enterItem = CCMenuItemSprite::create(enterNor, enterPre, this, menu_selector(GameOverLayer::enterAction));
+        enterItem = CCMenuItemSprite::create(enterNor, enterPre, this, menu_selector(GameOverLayer::enterAction));
         CCFiniteTimeAction *enterSeq = createOverMenuItemAction(0.0, 0.5);
         enterItem->runAction(enterSeq);
         
@@ -108,20 +114,14 @@ bool GameOverLayer::init()
         scoreLayer->runAction(out);
         
         
-        CCTextFieldTTF *nameTTF = CCTextFieldTTF::textFieldWithPlaceHolder("请输入您的大名...", "Helvetica", 100);
+        nameTTF = CCTextFieldTTF::textFieldWithPlaceHolder("请输入您的大名...", "Helvetica", 70);
         nameTTF->setDelegate(this);
-        nameTTF->setPosition(ccp(winSize.width / 2 - 200, winSize.height / 3 + 200));
-//        nameTTF->Setcolo
-//        nameTTF->attachWithIME();
+        nameTTF->setPosition(ccp(winSize.width / 2 - 100, winSize.height / 3 + 180));
+        nameTTF->setColor(ccc3(0, 0, 0));
+        nameTTF->setColorSpaceHolder(ccc3(52, 52, 52));
         
-//        nameTTF->setDesignedSize(CCSizeMake(1000, 1000));
         this->addChild(nameTTF);
-        
-        
-        
-        
-        //moveWithParabola(scoreLayer, ccp(0, winSize.height / 2), ccp(winSize.width / 2, winSize.height / 2), 1.5);
-        
+    
         pRet = true;
     } while (0);
     
@@ -144,7 +144,7 @@ string intToStrOver(int a)
     return str;
 }
 
-
+//创建一个移动动画
 CCFiniteTimeAction *createOverMenuItemAction(float delay,float duration)
 {
     CCActionInterval *move = CCMoveBy::create(duration, ccp(-270 * 3 - 160, 0));
@@ -184,7 +184,14 @@ void GameOverLayer::playAction(CCObject *pScene){
     CCDirector::sharedDirector()->replaceScene(gameScene);
 }
 void GameOverLayer::enterAction(CCObject *pScene){
-    
+//    CCScene *menuScene = MenuScene::create();
+//    CCDirector::sharedDirector()->replaceScene(menuScene);
+    if (strlen(nameTTF->getString()) != 0) {
+        enterItem->setEnabled(false);
+        Dao::sharedDao()->targetObject = this;
+        Dao::sharedDao()->requestForUploadRecord(CCString::createWithFormat("%d",score), CCString::create(nameTTF->getString()));
+    }
+   
 }
 void GameOverLayer::returnAction(CCObject *pScene){
     CCScene *menuScene = MenuScene::create();
@@ -195,6 +202,7 @@ void GameOverLayer::returnAction(CCObject *pScene){
 bool GameOverLayer::onTextFieldAttachWithIME(CCTextFieldTTF *pSender)
 {
     CCLOG("启动输入");
+
     return false;
     //return true:不启动
 }
@@ -202,15 +210,39 @@ bool GameOverLayer::onTextFieldAttachWithIME(CCTextFieldTTF *pSender)
 bool GameOverLayer::onTextFieldDetachWithIME(CCTextFieldTTF *pSender)
 {
     CCLOG("关闭输入");
+    this->setPositionY(0);
     return false;
     //return true:不关闭
 }
+
+int lengthOfText(const char *text)
+{
+    int length = 0;
+    for (int i = 0 ; i < strlen(text); i ++) {
+        if (text[i] < 0) {
+            length += 1;
+            i++;
+            continue;
+        }
+        else{
+            length += 1;
+        }
+    }
+    return length;
+}
+
 //当用户进行输入时的回调函数
 bool GameOverLayer::onTextFieldInsertText(CCTextFieldTTF *pSender,const char *text,int nLen)
 {
-    CCLOG("输入字符...");
+    CCString *textStr = CCString::createWithFormat("%s%s",pSender->getString(),text);
+    int length = lengthOfText(textStr->getCString());
+//    CCLOG("输入字符... %d",nLen);
+    CCLog("%d",length);
+    if (length > 10) {
+        return true;
+    }
     return false;
-    //return true:不会输入进字符
+//    return true;//不会输入进字符
     
 }
 //当用户删除文字时的回调函数
@@ -220,11 +252,131 @@ bool GameOverLayer::onTextFieldDeleteBackward(CCTextFieldTTF *pSender,const char
     return false;
     //return true:不删除
 }
-bool GameOverLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
-    
-    CCLog("touch");
-    return true;
+void GameOverLayer::ccTouchesBegan(CCSet *pSet, CCEvent *pEvent){
+    CCTouch *pTouch = (CCTouch *)pSet->anyObject();
+    CCPoint location = pTouch->getLocationInView();
+    location = CCDirector::sharedDirector()->convertToGL(location);
+    if (nameTTF->boundingBox().containsPoint(location)) {
+        nameTTF->attachWithIME();
+        
+    }else{
+        nameTTF->detachWithIME();
+    }
+
 }
-void GameOverLayer::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent){
+void GameOverLayer::ccTouchesMoved(CCSet *pSet, CCEvent *pEvent){
     
+}
+void GameOverLayer::ccTouchesCancelled(CCSet *pSet, CCEvent *pEvent){
+    
+}
+void GameOverLayer::ccTouchesEnded(CCSet *pSet, CCEvent *pEvent){
+    
+}
+
+void GameOverLayer::keyboardWillHide(CCIMEKeyboardNotificationInfo &info)
+{
+    CCActionInterval *moveTo = CCMoveTo::create(0.2, ccp(0, 0));
+    this->runAction(moveTo);
+}
+void GameOverLayer::keyboardWillShow(CCIMEKeyboardNotificationInfo &info)
+{
+    CCActionInterval *moveTo = CCMoveTo::create(0.2, ccp(0, 300));
+    this->runAction(moveTo);
+}
+
+void GameOverLayer::onRecordRequestCompleted(CCHttpClient* client, CCHttpResponse* response)
+{
+    
+}
+//提交分数的回调函数
+void GameOverLayer::onHttpRequestCompleted(CCHttpClient* client, CCHttpResponse* response)
+{
+    if (!response)
+    {
+        return;
+    }
+    int s=response->getHttpRequest()->getRequestType();
+    CCLog("request type %d",s);
+    
+    const char *tag;
+    if (0 != strlen(response->getHttpRequest()->getTag()))
+    {
+        tag = response->getHttpRequest()->getTag();
+        CCLog("%s ------>oked", response->getHttpRequest()->getTag());
+    }
+    
+    int statusCode = response->getResponseCode();
+    CCLog("response code: %d", statusCode);
+    
+    
+    char statusString[64] = {};
+    sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode, response->getHttpRequest()->getTag());
+    CCLog(statusString);
+    
+    if (!response->isSucceed())
+    {
+        CCLog("response failed");
+        CCLog("error buffer: %s", response->getErrorBuffer());
+        return;
+    }
+    
+    std::vector<char> *buffer = response->getResponseData();
+    printf("Http Test, dump data: ");
+    for (unsigned int i = 0; i < buffer->size(); i++)
+    {
+        //        CCLog("%c", (*buffer)[i]);//这里打印从服务器返回的数据
+        printf("%c",(*buffer)[i]);
+        
+    }
+    printf("\n");
+    
+    string str = string(buffer->begin(),buffer->end());
+    Json *json = Json_create(str.c_str());
+    
+    
+//    Json *jsonSuccess = Json_getItem(json, "success");
+    int success = Json_getInt(json, "success", 0);
+    if (success == 0) {
+        
+        return;
+    }else{
+        if (!strcmp(tag, RECORD_HTTP_TAG)) {
+            CCLog("上传成功");
+            Dao::sharedDao()->requestForGetTop();
+        }
+        else if (!strcmp(tag, TOP_HTTP_TAG)){
+            CCLog("下载成功");
+            //将数据保存在一个单例中，以便排行榜界面使用
+            GlobalModel *globalModel = GlobalModel::sharedGlobalModel();
+            PlayerHolder *userHolder = new PlayerHolder();
+            userHolder->setName(CCString::create(nameTTF->getString()));
+            userHolder->setScore(CCString::createWithFormat("%d",score));
+            globalModel->setUserHolder(userHolder);
+//            userHolder->release();
+            
+            CCArray *rankArray = CCArray::createWithCapacity(10);
+            //Json解析
+            Json *jsonData = Json_getItem(json, "data");
+            int len = Json_getSize(jsonData);
+            for (int i = 0 ; i < len; i ++) {
+                PlayerHolder *holder = new PlayerHolder();
+                Json *jsonChild = Json_getItemAt(jsonData, i);
+                CCString *nameStr = CCString::create(Json_getString(jsonChild, "name", "n"));
+                CCString *scoreStr = CCString::create(Json_getString(jsonChild, "score", "s"));
+                holder->setName(nameStr);
+                holder->setScore(scoreStr);
+                rankArray->addObject(holder);
+                CCLog("%s",Json_getString(jsonChild, "name", "n"));
+                CCLog("%s",Json_getString(jsonChild, "score", "s"));
+            }
+            globalModel->setRankArray(rankArray);
+//            rankArray->release();
+            enterItem->setEnabled(true);
+            CCScene *rankListScene = RankListScene::create();
+            CCDirector::sharedDirector()->replaceScene(rankListScene);//跳转到排行榜界面
+        }
+    }
+    
+
 }

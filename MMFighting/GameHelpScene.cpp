@@ -8,6 +8,7 @@
 
 #include "GameHelpScene.h"
 #include "GameHelpLayer.h"
+#include "AudioManager.h"
 
 GameHelpScene::GameHelpScene()
 {

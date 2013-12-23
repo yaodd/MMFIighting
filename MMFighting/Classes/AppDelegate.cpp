@@ -13,6 +13,8 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "GameOverScene.h"
+#include "Dao.h"
+#include "RankListScene.h"
 
 const char allImagePlistName[30] = "MMFightingAllImage.plist";
 const char allImagePngName[30] = "MMFightingAllImage.png";
@@ -56,10 +58,17 @@ bool AppDelegate::applicationDidFinishLaunching()
     CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(allImagePlistName, allImagePvrName);
     CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(allImagePlistName2,allImagePvrName2);
     // create a scene. it's an autorelease object
+
     CCScene *pScene = MenuScene::create();
+//    CCScene *pScene = GameOverScene::create(12306);
+//    CCScene *pScene = RankListScene::create();
+//    CCScene *pScene = MenuScene::create();
 //    CCScene *pScene = GameOverScene::create(12312);
     // run
     pDirector->runWithScene(pScene);
+    
+//    Dao::sharedDao()->requestForUploadRecord(CCString::createWithFormat("55555"), CCString::createWithFormat("yyyyy"));
+//    Dao::sharedDao()->requestForGetTop();
 
     return true;
 }

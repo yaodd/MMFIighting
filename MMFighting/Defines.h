@@ -20,11 +20,11 @@ typedef struct _BoundingBox{
 
 #define SCALE_DEFAULT               1.5f
 
-#define MAP_WIDTH   2048.0f
-#define MAP_HEIGHT  230.f
+#define MAP_WIDTH   2048.0f         //精灵移动区域的宽
+#define MAP_HEIGHT  230.f           //精灵移动区域的高
 
-#define CENTER_TO_BOTTOM (117.0f/* * SCALE_DEFAULT*/)
-#define CENTER_TO_SIDE (60.0f/* * SCALE_DEFAULT*/)
+#define CENTER_TO_BOTTOM (117.0f/* * SCALE_DEFAULT*/)//精灵中心点到上下的距离
+#define CENTER_TO_SIDE (60.0f/* * SCALE_DEFAULT*/)  //精灵中心点到左右的距离
 
 #define CURTIME GetCurTime()
 
@@ -41,5 +41,7 @@ inline float GetCurTime(){
     unsigned long millisecs = (time.tv_sec * 1000) + (time.tv_usec / 1000);
     return (float)millisecs;
 };
+
+CCFiniteTimeAction *createMenuItemAction(float delay,float duration, float moveBy);
 
 #endif

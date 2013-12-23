@@ -25,8 +25,10 @@ public:
     void init();
     
     void playEffect(int i);
+    void playSpecialEffect(int i);
     void playMenuMusic();
     void playGameMusic();
+    void playOverMusic();
     void pauseMusic();
     void resumeMusic();
 //    void pauseGameMusic();

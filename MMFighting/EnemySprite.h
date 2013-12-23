@@ -13,6 +13,10 @@
 #include "Defines.h"
 
 
+class EnemySpriteDelegate{
+public:
+    virtual void EnemySpriteBeKilled() = 0;
+};
 enum ActionState{
     kActionStateNone,
     kActionStateDie,
@@ -65,6 +69,9 @@ public:
     void update(float dt);
     void walkWithDirection(CCPoint direction);
     void updatePosition(CCPoint resultPoint);
+    
+    EnemySpriteDelegate *delegate;
+    
     //属性值
     CC_SYNTHESIZE(int, _healthPoint, HealthPoint);      //HP
     CC_SYNTHESIZE(int, _attack, Attack);                //攻击力

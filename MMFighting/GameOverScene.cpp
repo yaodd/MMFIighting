@@ -29,8 +29,7 @@ GameOverScene *GameOverScene::create(int score)
 bool GameOverScene::init(){
     bool pRet = false;
     do {
-        winSize = CCDirector::sharedDirector()->getWinSize();
-        audioManager = AudioManager::sharedManager();
+        AudioManager::sharedManager()->playOverMusic();
 //        gameOverLayer = GameOverLayer::create(123);
         
         gameOverLayer = GameOverLayer::create(this->score);

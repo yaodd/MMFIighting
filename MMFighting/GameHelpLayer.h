@@ -4,7 +4,7 @@
 //
 //  Created by yaodd on 13-12-19.
 //
-//
+//  游戏帮助界面
 
 #ifndef __MMFighting__GameHelpLayer__
 #define __MMFighting__GameHelpLayer__
@@ -29,11 +29,11 @@ public:
 
     CCSize winSize;
     
-    void handAction(CCScene *pObject);
-    void footAction(CCScene *pObject);
+    void handAction(CCScene *pObject);          //普通攻击
+    void footAction(CCScene *pObject);          //大招
     
-    void preAction(CCScene *pObject);
-    void playAction(CCScene *pObject);
+    void preAction(CCScene *pObject);           //返回到主菜单
+    void playAction(CCScene *pObject);          //开始游戏
     
     void onCCJoyStickUpdate(CCNode *sender, float angle, CCPoint direction, float power);
     void onCCJoyStickActivated(CCNode* sender);
